@@ -79,7 +79,7 @@ submitOrder
 ## Описание используемых классов
 ### Классы модели
 
-1. **Item (Товар)**
+1. Класс Item (Товар)
    - **Атрибуты**:
      id: string — уникальный идентификатор товара
      title: string — название товара
@@ -91,7 +91,7 @@ submitOrder
      getFormattedPrice(): string — возвращает цену товара в отформатированном виде
      getItemDetails(): string — возвращает краткое описание товара для отображения в карточке
 
-2. **User (Пользователь)**
+2. Класс User (Пользователь)
    - **Атрибуты**:
      id: string — уникальный идентификатор пользователя
      email: string — электронная почта
@@ -100,7 +100,7 @@ submitOrder
      updateContactInfo(newEmail: string, newPhone: string): void — обновляет контактную информацию пользователя
      getContactDetails(): string — возвращает контактные данные пользователя в виде строки
 
-3. **Basket (Корзина)**
+3. Класс Basket (Корзина)
    - **Атрибуты**:
      items: IItem[] — список товаров в корзине
      total: number — общая сумма корзины
@@ -118,43 +118,43 @@ submitOrder
 
 ### Классы представления
 
-1. **MainPageView**
+1. Класс MainPageView:
    - **Методы**:
-     - `renderItems(items: IItem[]): void` — отображает список товаров на главной странице.
-     - `showError(message: string): void` — отображает сообщение об ошибке на странице.
+     renderItems(items: IItem[]): отображение списка товаров на главной странице
+     showError(message: string): отображение ошибки
 
-2. **ItemCardView**
+2. Класс ItemCardView:
    - **Методы**:
-     - `render(item: IItem): void` — отображает карточку товара с его основной информацией.
-     - `onAddToBasketClick(item: IItem): void` — обрабатывает нажатие на кнопку "Добавить в корзину".
+     render(item: IItem): отображение конкретной карточки товара
+     onAddToBasketClick(item: IItem): обработка нажатия кнопки "Добавить в корзину"
 
-3. **ItemModalView**
+3. Класс ItemModalView:
    - **Методы**:
-     - `render(item: IItem): void` — отображает информацию о товаре в модальном окне.
-     - `onAddToBasketClick(item: IItem): void` — обрабатывает добавление товара в корзину через модальное окно.
-     - `closeModal(): void` — закрывает модальное окно.
+     render(item: IItem): отображение информации о товаре
+     onAddToBasketClick(item: IItem): обработка добавления товара в корзину
+     closeModal(): закрытие модального окна
 
-4. **BasketModalView**
+4. Класс BasketModalView:
    - **Методы**:
-     - `renderBasket(basket: IBasket): void` — отображает содержимое корзины в модальном окне.
-     - `onRemoveItemClick(itemId: string): void` — обрабатывает удаление товара из корзины.
-     - `closeModal(): void` — закрывает модальное окно корзины.
+     renderBasket(basket: IBasket): отображение содержимого корзины
+     onRemoveItemClick(item: IItem): обработка удаления товара из корзины
+     closeModal(): закрытие модального окна
 
-5. **PaymentModalView**
+5. Класс PaymentModalView:
    - **Методы**:
-     - `renderPaymentForm(basket: IBasket): void` — отображает форму оплаты для текущей корзины.
-     - `onPaymentSubmit(paymentDetails: { paymentMethod: string; shippingAddress: string }): void` — обрабатывает отправку формы оплаты.
-     - `showError(message: string): void` — отображает сообщение об ошибке при оплате.
+     renderPaymentForm(basket: IBasket): отображение формы оплаты заказа
+     onPaymentSubmit(paymentDetails: { paymentMethod: string, shippingAddress: string }): обработка отправки данных оплаты
+     showError(message: string): отображение ошибки при оплате
 
-6. **ContactsModalView**
-   - **Методы**:
-     - `renderContactForm(user: IUser): void` — отображает форму с контактной информацией пользователя.
-     - `onSubmitContactForm(contactDetails: { email: string; phone: string }): void` — обрабатывает отправку формы с контактной информацией.
+6. Класс ContactsModalView: отображение контактов пользователя
+   - **Методы**: 
+     renderContactForm(user: IUser): отображение контактной информации
+     onSubmitContactForm: обработка отправки контактов пользователя
 
-7. **SuccessOrderModalView**
-   - **Методы**:
-     - `renderSuccessMessage(orderId: string): void` — отображает сообщение об успешном заказе с идентификатором заказа.
-
+7. Класс SuccessOrderModalView: отображение сообщения об успешном оформлении заказа
+   - **Методы**: 
+     renderSuccessMessage(): отображение сообщения об успешном заказе
+ 
  ### API 
  Класс Api: базовая логика отправки запросов
     - **Атрибуты**:
@@ -170,18 +170,18 @@ submitOrder
 
  Класс EventEmitter: обеспечивает работу событий. Его методы позволяют устанавливать и снимать слушатели событий, вызывать слушатели при возникновении события.
     - **Атрибуты**:
-        events: карта событий, которая связывает имена событий с подписчиками (функциями обратного вызова).
+        events: карта событий, которая связывает имена событий с подписчиками (функциями обратного вызова)
     - **Методы**:
-        on(eventName: EventName, callback: (event: T) => void): подписывает на событие с указанным именем.
-        off(eventName: EventName, callback: Subscriber): удаляет подписку на событие.
-        emit(eventName: string, data?: T): вызывает событие с переданными данными.
-        onAll(callback: (event: EmitterEvent) => void): подписка на все события.
-        offAll(): удаляет все подписки.
-        trigger(eventName: string, context?: Partial<T>): создает функцию, которая инициирует событие при вызове.
+        on(eventName: EventName, callback: (event: T) => void): подписывает на событие с указанным именем
+        off(eventName: EventName, callback: Subscriber): удаляет подписку на событие
+        emit(eventName: string, data?: T): вызывает событие с переданными данными
+        onAll(callback: (event: EmitterEvent) => void): подписка на все события
+        offAll(): удаляет все подписки
+        trigger(eventName: string, context?: Partial<T>): создает функцию, которая инициирует событие при вызове
     - **Типы**:
-        EventName: строка или регулярное выражение, представляющее имя события.
-        Subscriber: функция, представляющая подписчика на событие.
-        EmitterEvent: объект события с именем и данными.        
+        EventName: строка или регулярное выражение, представляющее имя события
+        Subscriber: функция, представляющая подписчика на событие
+        EmitterEvent: объект события с именем и данными       
 
 ### Связь между моделью и представлением
 Связь между слоем модели и представлением реализована через слой Presenter. Он управляет взаимодействием между Model и View, принимая пользовательские команды, обновляя данные и передавая их для отображения.        
