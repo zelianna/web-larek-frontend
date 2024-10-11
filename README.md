@@ -78,70 +78,82 @@ submitOrder
 
 ## Описание используемых классов
 ### Классы модели
-1.  Класс Item (Товар):
-   - **Атрибуты**:
-       id: уникальный идентификатор товара
-       title: название товара
-       image: изображение товара
-       price: цена товара
-       category: категория товара
-       description: описание товара
-   - **Методы**: обработка данных товара
 
-2. Класс User (Пользователь):
+1. **Item (Товар)**
    - **Атрибуты**:
-       id: уникальный идентификатор пользователя
-       email: электронная почта
-       phone: номер телефона
-   - **Методы**: обработка данных пользователя
+     id: string — уникальный идентификатор товара
+     title: string — название товара
+     image: string — изображение товара
+     price: number — цена товара
+     category: string — категория товара
+     description: string — описание товара
+   - **Методы**:
+     getFormattedPrice(): string — возвращает цену товара в отформатированном виде
+     getItemDetails(): string — возвращает краткое описание товара для отображения в карточке
 
-3. Класс Basket (Корзина):
+2. **User (Пользователь)**
    - **Атрибуты**:
-       items: список товаров в корзине (массив `IItem[]`)
-       total: общая сумма корзины
-       payment_method: метод оплаты
-       shipping_address: адрес доставки
-       buyer_id: идентификатор покупателя
-       status_order: статус заказа
-   - **Методы**: добавление товара, удаление товара, оформление заказа
+     id: string — уникальный идентификатор пользователя
+     email: string — электронная почта
+     phone: string — номер телефона
+   - **Методы**:
+     updateContactInfo(newEmail: string, newPhone: string): void — обновляет контактную информацию пользователя
+     getContactDetails(): string — возвращает контактные данные пользователя в виде строки
+
+3. **Basket (Корзина)**
+   - **Атрибуты**:
+     items: IItem[] — список товаров в корзине
+     total: number — общая сумма корзины
+     payment_method: string — метод оплаты
+     shipping_address: string — адрес доставки
+     buyer_id: string — идентификатор покупателя
+     status_order: string — статус заказа
+   - **Методы**:
+     addItem(item: IItem): void — добавляет товар в корзину
+     removeItem(itemId: string): void — удаляет товар из корзины по id
+     getTotalPrice(): number — возвращает общую сумму корзины
+     clearBasket(): void — очищает корзину
+     submitOrder(): Promise<string> — отправляет заказ на сервер и возвращает статус заказа
+
 
 ### Классы представления
-1. Класс MainPageView:
+
+1. **MainPageView**
    - **Методы**:
-     renderItems(items: IItem[]): отображение списка товаров на главной странице
-     showError(message: string): отображение ошибки
+     - `renderItems(items: IItem[]): void` — отображает список товаров на главной странице.
+     - `showError(message: string): void` — отображает сообщение об ошибке на странице.
 
-2. Класс ItemCardView:
+2. **ItemCardView**
    - **Методы**:
-     render(item: IItem): отображение конкретной карточки товара
-     onAddToBasketClick(item: IItem): обработка нажатия кнопки "Добавить в корзину"
+     - `render(item: IItem): void` — отображает карточку товара с его основной информацией.
+     - `onAddToBasketClick(item: IItem): void` — обрабатывает нажатие на кнопку "Добавить в корзину".
 
-3. Класс ItemModalView:
+3. **ItemModalView**
    - **Методы**:
-     render(item: IItem): отображение информации о товаре
-     onAddToBasketClick(item: IItem): обработка добавления товара в корзину
-     closeModal(): закрытие модального окна
+     - `render(item: IItem): void` — отображает информацию о товаре в модальном окне.
+     - `onAddToBasketClick(item: IItem): void` — обрабатывает добавление товара в корзину через модальное окно.
+     - `closeModal(): void` — закрывает модальное окно.
 
-4. Класс BasketModalView:
+4. **BasketModalView**
    - **Методы**:
-     renderBasket(basket: IBasket): отображение содержимого корзины
-     onRemoveItemClick(item: IItem): обработка удаления товара из корзины
-     closeModal(): закрытие модального окна
+     - `renderBasket(basket: IBasket): void` — отображает содержимое корзины в модальном окне.
+     - `onRemoveItemClick(itemId: string): void` — обрабатывает удаление товара из корзины.
+     - `closeModal(): void` — закрывает модальное окно корзины.
 
-5. Класс PaymentModalView:
+5. **PaymentModalView**
    - **Методы**:
-     renderPaymentForm(basket: IBasket): отображение формы оплаты заказа
-     onPaymentSubmit(paymentDetails: { paymentMethod: string, shippingAddress: string }): обработка отправки данных оплаты
-     showError(message: string): отображение ошибки при оплате
+     - `renderPaymentForm(basket: IBasket): void` — отображает форму оплаты для текущей корзины.
+     - `onPaymentSubmit(paymentDetails: { paymentMethod: string; shippingAddress: string }): void` — обрабатывает отправку формы оплаты.
+     - `showError(message: string): void` — отображает сообщение об ошибке при оплате.
 
-6. Класс ContactsModalView: отображение контактов пользователя
-   - **Методы**: 
-     renderContactForm(user: IUser): отображение контактной информации
-     onSubmitContactForm: обработка отправки контактов пользователя
+6. **ContactsModalView**
+   - **Методы**:
+     - `renderContactForm(user: IUser): void` — отображает форму с контактной информацией пользователя.
+     - `onSubmitContactForm(contactDetails: { email: string; phone: string }): void` — обрабатывает отправку формы с контактной информацией.
 
-7. Класс SuccessOrderModalView: отображение сообщения об успешном оформлении заказа
-   - **Методы**: 
-     renderSuccessMessage(): отображение сообщения об успешном заказе
+7. **SuccessOrderModalView**
+   - **Методы**:
+     - `renderSuccessMessage(orderId: string): void` — отображает сообщение об успешном заказе с идентификатором заказа.
 
  ### API 
  Класс Api: базовая логика отправки запросов
