@@ -11,9 +11,10 @@
 - src/pages/index.html — HTML-файл главной страницы
 - src/types/index.ts — файл с типами
 - src/index.ts — точка входа приложения
-- src/styles/styles.scss — корневой файл стилей
+- src/scss/styles.scss — корневой файл стилей
 - src/utils/constants.ts — файл с константами
 - src/utils/utils.ts — файл с утилитами
+
 
 ## Установка и запуск
 Для установки и запуска проекта необходимо выполнить команды
@@ -75,5 +76,104 @@ submitOrder
 
 ![UML схема проекта](./README_UML.jpg)
 
+## Описание используемых классов
+### Классы модели
+1.  Класс Item (Товар):
+   - **Атрибуты**:
+       id: уникальный идентификатор товара
+       title: название товара
+       image: изображение товара
+       price: цена товара
+       category: категория товара
+       description: описание товара
+   - **Методы**: обработка данных товара
 
+2. Класс User (Пользователь):
+   - **Атрибуты**:
+       id: уникальный идентификатор пользователя
+       email: электронная почта
+       phone: номер телефона
+   - **Методы**: обработка данных пользователя
 
+3. Класс Basket (Корзина):
+   - **Атрибуты**:
+       items: список товаров в корзине (массив `IItem[]`)
+       total: общая сумма корзины
+       payment_method: метод оплаты
+       shipping_address: адрес доставки
+       buyer_id: идентификатор покупателя
+       status_order: статус заказа
+   - **Методы**: добавление товара, удаление товара, оформление заказа
+
+### Классы представления
+1. Класс MainPageView:
+   - **Методы**:
+     renderItems(items: IItem[]): отображение списка товаров на главной странице
+     showError(message: string): отображение ошибки
+
+2. Класс ItemCardView:
+   - **Методы**:
+     render(item: IItem): отображение конкретной карточки товара
+     onAddToBasketClick(item: IItem): обработка нажатия кнопки "Добавить в корзину"
+
+3. Класс ItemModalView:
+   - **Методы**:
+     render(item: IItem): отображение информации о товаре
+     onAddToBasketClick(item: IItem): обработка добавления товара в корзину
+     closeModal(): закрытие модального окна
+
+4. Класс BasketModalView:
+   - **Методы**:
+     renderBasket(basket: IBasket): отображение содержимого корзины
+     onRemoveItemClick(item: IItem): обработка удаления товара из корзины
+     closeModal(): закрытие модального окна
+
+5. Класс PaymentModalView:
+   - **Методы**:
+     renderPaymentForm(basket: IBasket): отображение формы оплаты заказа
+     onPaymentSubmit(paymentDetails: { paymentMethod: string, shippingAddress: string }): обработка отправки данных оплаты
+     showError(message: string): отображение ошибки при оплате
+
+6. Класс ContactsModalView: отображение контактов пользователя
+   - **Методы**: 
+     renderContactForm(user: IUser): отображение контактной информации
+     onSubmitContactForm: обработка отправки контактов пользователя
+
+7. Класс SuccessOrderModalView: отображение сообщения об успешном оформлении заказа
+   - **Методы**: 
+     renderSuccessMessage(): отображение сообщения об успешном заказе
+
+ ### API 
+ Класс Api:
+    - **Атрибуты**:
+        baseUrl: строка, представляющая базовый URL API.
+        options: параметры запроса
+
+    - **Методы**:  
+        get(uri: string): отправляет GET-запрос на указанный URI и обрабатывает ответ.
+        post(uri: string, data: object, method: ApiPostMethods = 'POST'): отправляет POST, PUT или DELETE запрос с переданными данными.
+        handleResponse(response: Response): обрабатывает ответ от сервера, возвращая данные или ошибку.
+
+    - **Типы**:
+        ApiListResponse<Type>: представляет ответ API, содержащий общее количество и массив элементов типа Type.
+        ApiPostMethods: тип, который определяет методы POST, PUT, DELETE.    
+
+ Класс EventEmitter:
+    - **Атрибуты**:
+        events: карта событий, которая связывает имена событий с подписчиками (функциями обратного вызова).
+
+    - **Методы**:
+        on(eventName: EventName, callback: (event: T) => void): подписывает на событие с указанным именем.
+        off(eventName: EventName, callback: Subscriber): удаляет подписку на событие.
+        emit(eventName: string, data?: T): вызывает событие с переданными данными.
+        onAll(callback: (event: EmitterEvent) => void): подписка на все события.
+        offAll(): удаляет все подписки.
+        trigger(eventName: string, context?: Partial<T>): создает функцию, которая инициирует событие при вызове.
+
+    - **Типы**:
+        EventName: строка или регулярное выражение, представляющее имя события.
+        Subscriber: функция, представляющая подписчика на событие.
+        EmitterEvent: объект события с именем и данными.        
+
+### Связь между моделью и представлением
+Связь между слоем модели и представлением реализована через слой Presenter. Он управляет взаимодействием между Model и View, принимая пользовательские команды, обновляя данные и передавая их для отображения.        
