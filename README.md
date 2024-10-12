@@ -104,10 +104,10 @@ submitOrder
    - **Атрибуты**:
      items: IItem[] — список товаров в корзине
      total: number — общая сумма корзины
-     payment_method: string — метод оплаты
-     shipping_address: string — адрес доставки
-     buyer_id: string — идентификатор покупателя
-     status_order: string — статус заказа
+     paymentMethod: string — метод оплаты
+     shippingAddress: string — адрес доставки
+     buyerId: string — идентификатор покупателя
+     statusOrder: string — статус заказа
    - **Методы**:
      addItem(item: IItem): void — добавляет товар в корзину
      removeItem(itemId: string): void — удаляет товар из корзины по id

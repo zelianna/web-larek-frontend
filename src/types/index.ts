@@ -21,10 +21,10 @@ export interface IUser {
 export interface IBasket {
     items: IItem[];             // список товаров в корзине
     total: number;             // общая сумма корзины
-    payment_method: string;
-    shipping_address: string;  
-    buyer_id: string; 
-    status_order: string;      // статус заказа
+    paymentMethod: string;
+    shippingAddress: string;  
+    buyerId: string; 
+    statusOrder: string;      // статус заказа
 /*     
     // Метод для добавления товара в корзину
     addItemToBasket(value: IItem): void;
