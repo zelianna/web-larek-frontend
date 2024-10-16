@@ -39,7 +39,7 @@ export interface IBasket {
 
 // Интерфейс отображений Views
 
-export interface MainPageView {
+export interface IMainPageView {
     renderItems(items: IItem[]): void;    // Отображение списка товаров
     showError(message: string): void;
 }
