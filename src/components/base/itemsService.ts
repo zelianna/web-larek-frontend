@@ -1,4 +1,3 @@
-// itemsService.ts
 import { Api, ApiListResponse } from './api';
 import { IItem } from '../../types/index'; 
 import { API_URL } from '../../utils/constants';
@@ -11,6 +10,6 @@ export async function fetchItems(): Promise<IItem[]> {
         return (response as ApiListResponse<IItem>).items; // Приведение ответа к типу ApiListResponse<IItem>
     } catch (error) {
         console.error('Ошибка при получении товаров:', error);
-        throw error; // Обработка ошибок
+        throw error; 
     }
 }

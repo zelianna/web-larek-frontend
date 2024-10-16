@@ -1,10 +1,10 @@
 import { IItem } from '../../types/index';  
+import { CDN_URL } from '../../utils/constants';
 
 export class MainPageView {
     private galleryElement: HTMLElement;
 
     constructor(galleryElement: HTMLElement) {
-        console.log('>>>>> I am here!');
         this.galleryElement = galleryElement;
     }
 
@@ -22,10 +22,15 @@ export class MainPageView {
             const card = clone.querySelector('.gallery__item') as HTMLElement;
             const cardTitle = card.querySelector('.card__title') as HTMLElement;
             const cardPrice = card.querySelector('.card__price') as HTMLElement;
+            const cardCategory = card.querySelector('.card__category') as HTMLElement;
+            const cardImage = card.querySelector('.card__image') as HTMLImageElement;
 
             // Устанавливаем данные в карточку
             cardTitle.textContent = item.title;
-            cardPrice.textContent = `${item.price} синапсов`;
+            //cardPrice.textContent = `${item.price} синапсов`;
+            cardPrice.textContent = item.price !== null ? `${item.price} синапсов` : 'Бесценно';
+            cardCategory.textContent = item.category;
+            cardImage.src = CDN_URL+item.image;
 
             // Добавляем обработчик для кнопки "В корзину"
             /* const addButton = card.querySelector('.button') as HTMLElement;
