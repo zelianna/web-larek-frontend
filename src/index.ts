@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (galleryElement) {
         const mainPageView = new MainPageView(galleryElement, eventEmitter);
         const items = await fetchItems();
-        console.log(items);
+        //console.log(items);
         mainPageView.renderItems(items);
     }
 }); 
@@ -23,14 +23,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 eventEmitter.on('card-preview:select', (event: { data: IItem }) => {
     const modalElement = cloneTemplate('#card-preview');
+    const container = document.getElementById('modal-container');
     const newItemModalView = new ItemModalView(
-        modalElement,
-        eventEmitter
+        container,
+        modalElement
     );
-    const container = document.getElementById('modal-content');
-    console.log('>>>>>', container.parentElement);
-    console.log('>>>>>', container.parentElement.parentElement);
-    container.parentElement.parentElement.style.display = 'flex';
-    container.append(modalElement);
     newItemModalView.renderItem(event.data);
 })

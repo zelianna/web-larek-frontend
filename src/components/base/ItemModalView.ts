@@ -1,19 +1,13 @@
 import { ModalForm } from "./ModalForm";
+import { CDN_URL } from '../../utils/constants';
 import { IItem } from "../../types";
 import { EventEmitter } from "./events";
 
 export class ItemModalView extends ModalForm {
     private item: IItem | null = null;
 
-    constructor(modalElement: HTMLElement, eventEmiter: EventEmitter) {
-        super(modalElement);
-
-        // Закрытие модального окна
-  /*       const closeButton = this.modalElement.querySelector('.modal__close') as HTMLElement;
-        closeButton.addEventListener('click', () => {
-            this.closeModal();
-        }); */
-        return this;
+    constructor(container: HTMLElement, modalElement: HTMLElement) {
+        super(container, modalElement);
     }
 
     // Новый метод для рендеринга информации о товаре
@@ -30,12 +24,11 @@ export class ItemModalView extends ModalForm {
         const priceElement = this.modalElement.querySelector('.card__price') as HTMLElement;
         const descriptionElement = this.modalElement.querySelector('.card__text') as HTMLElement;
         const imageElement = this.modalElement.querySelector('.card__image') as HTMLImageElement;
-
         // Заполнение данными товара
         titleElement.textContent = this.item.title;
         priceElement.textContent = this.item.price !== null ? `${this.item.price} синапсов` : 'Бесценно';
         descriptionElement.textContent = this.item.description;
-        imageElement.src = this.item.image;
+        imageElement.src = CDN_URL + this.item.image;
 
         this.openModal();  // Открытие модального окна
     }
