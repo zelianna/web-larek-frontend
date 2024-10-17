@@ -1,11 +1,17 @@
 import { IItem } from '../../types/index';  
 import { CDN_URL } from '../../utils/constants';
+import { ItemModalView } from './ItemModalView';
+import { EventEmitter } from '../../components/base/events';
 
 export class MainPageView {
     private galleryElement: HTMLElement;
+    private itemModalView: ItemModalView;
+    private eventEmitter: EventEmitter;
 
-    constructor(galleryElement: HTMLElement) {
+
+    constructor(galleryElement: HTMLElement, eventEmitter: EventEmitter) {
         this.galleryElement = galleryElement;
+        this.eventEmitter = eventEmitter;
     }
 
     // Метод для отображения товаров
@@ -31,6 +37,12 @@ export class MainPageView {
             cardPrice.textContent = item.price !== null ? `${item.price} синапсов` : 'Бесценно';
             cardCategory.textContent = item.category;
             cardImage.src = CDN_URL+item.image;
+
+            // Открытие модального окна при клике на карточку товара
+            card.addEventListener('click', () => {
+                this.eventEmitter.emit('card-preview:select', { data: item });
+            });
+
 
             // Добавляем обработчик для кнопки "В корзину"
             /* const addButton = card.querySelector('.button') as HTMLElement;
