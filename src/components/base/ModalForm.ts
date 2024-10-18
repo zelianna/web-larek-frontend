@@ -15,8 +15,11 @@ export abstract class ModalForm {
     // Открытие модального окна
     openModal(): void {
         this.modalElement.classList.add('modal_active');
+        this.modalElement.classList.add('page_wrapper_locked');
         this.container.style.display = 'flex';
         const bodyContainer = this.container.querySelector('.modal__content');
+        // Очищаем элемент перед отображением
+        bodyContainer.innerHTML = '';
         bodyContainer.append(this.modalElement);
     }
 
@@ -24,6 +27,7 @@ export abstract class ModalForm {
     closeModal(): void {
         this.container.style.display = 'none';
         this.modalElement.classList.remove('modal_active');
+        this.modalElement.classList.remove('page_wrapper_locked');
     }
 
     abstract render(): void 

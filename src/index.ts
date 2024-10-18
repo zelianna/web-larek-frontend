@@ -8,7 +8,6 @@ import { cloneTemplate } from './utils/utils';
 
 const eventEmitter = new EventEmitter();
 
-
 // Загрузка товаров на главной странице
 document.addEventListener('DOMContentLoaded', async () => {
     const galleryElement = document.querySelector('.gallery') as HTMLElement;
@@ -20,8 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 }); 
 
-
-eventEmitter.on('card-preview:select', (event: { data: IItem }) => {
+eventEmitter.on('card-preview:open', (event: { data: IItem }) => {
     const modalElement = cloneTemplate('#card-preview');
     const container = document.getElementById('modal-container');
     const newItemModalView = new ItemModalView(

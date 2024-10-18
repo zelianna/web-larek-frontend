@@ -40,7 +40,7 @@ export class MainPageView {
 
             // Открытие модального окна при клике на карточку товара
             card.addEventListener('click', () => {
-                this.eventEmitter.emit('card-preview:select', { data: item });
+                this.eventEmitter.emit('card-preview:open', { data: item });
             });
 
 

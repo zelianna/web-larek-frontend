@@ -1,8 +1,6 @@
 import { ModalForm } from "./ModalForm";
 import { CDN_URL } from '../../utils/constants';
 import { IItem } from "../../types";
-import { EventEmitter } from "./events";
-
 export class ItemModalView extends ModalForm {
     private item: IItem | null = null;
 
@@ -10,13 +8,11 @@ export class ItemModalView extends ModalForm {
         super(container, modalElement);
     }
 
-    // Новый метод для рендеринга информации о товаре
     renderItem(item: IItem): void {
         this.item = item;
         this.render();  // Открываем модальное окно
     }
 
-    // Реализация абстрактного метода render() для открытия окна
     render(): void {
         if (!this.item) return;  // Если нет товара, ничего не делаем
 
