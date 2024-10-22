@@ -14,33 +14,39 @@ export class Basket {
   constructor(eventEmitter: EventEmitter) {
     this.eventEmitter = eventEmitter;
     this.eventEmitter.on('basket:itemAdded', (e: {item: IItem}) =>  this.addItem(e.item));
-    //this.basket.addItem(item);
+    this.eventEmitter.on('basket:itemRemoved', (e: {item: IItem}) =>  this.removeItem(e.item));
   }
 
   addItem(item: IItem): void {
     this.items.push(item);
     this.updateTotal();
+    this.eventEmitter.emit('basket:changed'); 
   }
 
-  removeItem(itemId: string): void {
+  removeItem(item: IItem): void {
+    const itemId = item.id;
     this.items = this.items.filter(item => item.id !== itemId);
     this.updateTotal();
+    this.eventEmitter.emit('basket:changed');
   }
 
   getTotalPrice(): number {
+    console.log('>>> total3', this.total);
     return this.total;
   }
 
   updateTotal(): void {
+    this.total = 0;
+    console.log('total_1: ', this.total);
     this.total = this.items.reduce((sum, item) => sum + item.price, 0);
-    this.eventEmitter.emit('basket:changed');
+    console.log('total_2: ', this.total);
   }
 
-  clearBasket(): void {
+  /* clearBasket(): void {
     this.items = [];
     this.updateTotal();
     this.eventEmitter.emit('basket:cleared'); // Генерируем событие при очистке корзины
-  }
+  } */
 
   submitOrder(): Promise<string> {
     return new Promise((resolve, reject) => {

@@ -1,6 +1,7 @@
 export abstract class ModalForm {
     protected modalElement: HTMLElement;
     protected container: HTMLElement;
+    protected isRendered: boolean;
 
     constructor(container: HTMLElement, modalElement: HTMLElement) {
         this.container = container;
@@ -10,6 +11,7 @@ export abstract class ModalForm {
         closeButton.addEventListener('click', () => {
             this.closeModal();
         });
+        this.isRendered = false;
     }
 
     // Открытие модального окна
@@ -21,6 +23,7 @@ export abstract class ModalForm {
         // Очищаем элемент перед отображением
         bodyContainer.innerHTML = '';
         bodyContainer.append(this.modalElement);
+        this.isRendered = true;
     }
 
     // Закрытие модального окна
@@ -28,6 +31,7 @@ export abstract class ModalForm {
         this.container.style.display = 'none';
         this.modalElement.classList.remove('modal_active');
         this.modalElement.classList.remove('page_wrapper_locked');
+        this.isRendered = false;
     }
 
     abstract render(): void 

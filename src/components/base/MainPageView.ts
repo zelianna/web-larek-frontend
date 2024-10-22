@@ -33,21 +33,36 @@ export class MainPageView {
 
             // Устанавливаем данные в карточку
             cardTitle.textContent = item.title;
-            //cardPrice.textContent = `${item.price} синапсов`;
             cardPrice.textContent = item.price !== null ? `${item.price} синапсов` : 'Бесценно';
             cardCategory.textContent = item.category;
             cardImage.src = CDN_URL+item.image;
+            let cl = "";
+            switch(item.category) {
+                case "софт-скил":
+                    cl = 'card__category_soft';
+                    break;
+                case "другое":
+                    cl = 'card__category_other'; 
+                    break;
+                case "дополнительное":
+                    cl = 'card__category_additional'; 
+                    break;
+                case "кнопка":
+                    cl = 'card__category_button'; 
+                    break;
+                case "хард-скил":
+                    cl = 'card__category_hard'; 
+                    break;
+                default:
+                    cl = 'card__category_other'; 
+            }
+            cardCategory.classList.add(cl);
 
             // Открытие модального окна при клике на карточку товара
             card.addEventListener('click', () => {
                 this.eventEmitter.emit('card-preview:open', { data: item });
             });
 
-
-            // Добавляем обработчик для кнопки "В корзину"
-            /* const addButton = card.querySelector('.button') as HTMLElement;
-            addButton.addEventListener('click', () => this.onAddToBasketClick(item));
- */
             // Добавляем карточку в галерею
             this.galleryElement.appendChild(clone);
         });

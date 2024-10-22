@@ -3,79 +3,98 @@ import { IItem, IBasket } from '../../types/index';
 import { Basket } from './Basket'; 
 import { ModalForm } from './ModalForm'; 
 import { EventEmitter } from './events';
-
+import { cloneTemplate } from '../../utils/utils';
 export class BasketModalView extends ModalForm {
     private basket: Basket;
     private eventEmitter: EventEmitter;
-  
+    
+    private submitButton: HTMLElement;
+    private totalElement: HTMLElement;
+    private basketItemsContainer: HTMLElement;
+
     constructor(container: HTMLElement, modalElement: HTMLElement, basket: Basket, eventEmitter: EventEmitter) {
       super(container, modalElement);
       this.basket = basket;
       this.eventEmitter = eventEmitter;
-  
-      // Подписываемся на события корзины
-      //this.eventEmitter.on('basket:changed', () => this.render());
-      this.eventEmitter.on('basket:itemRemoved', () => this.render());
-      this.eventEmitter.on('basket:totalUpdated', () => this.updateBasketCounter());
-      this.eventEmitter.on('basket:cleared', () => this.render());
+      console.log('container: ', container);
+      
+      // Подписываемся на события модели
+      this.eventEmitter.on('basket:changed', () => {
+        if (this.isRendered) {
+            this.render()
+        }
+      });
     }
   
     render(): void {
       this.openModal();
-      const basketItemsContainer = this.modalElement.querySelector('.basket__list');
-      basketItemsContainer.innerHTML = '';
-  
-      if (this.basket.items.length === 0) {
-        basketItemsContainer.innerHTML = '<p>Корзина пуста</p>';
-        return;
-      }
-  
-      this.basket.items.forEach(item => {
-        const itemElement = this.renderBasketItem(item);
-        basketItemsContainer.appendChild(itemElement);
-      });
-  
-      const totalElement = this.modalElement.querySelector('.basket__price')!;
-      totalElement.textContent = `Итого: ${this.basket.getTotalPrice().toFixed(2)} ₽`;
-  
-      //this.updateBasketCounter();
+      this.basketItemsContainer = this.modalElement.querySelector('.basket__list') as HTMLElement;
+      this.totalElement = this.modalElement.querySelector('.basket__price') as HTMLElement;
+      this.submitButton = this.modalElement.querySelector('.button') as HTMLButtonElement;
+
+      this.updateBasketItems();
+      this.updateBasketCounter();
+      this.toggleSubmitButton(); 
       this.addRemoveItemListeners();
     }
   
     updateBasketCounter(): void {
-      const basketCounter = document.querySelector('.basket-counter')!;
-      basketCounter.textContent = `${this.basket.items.length}`;
+      this.totalElement.textContent = `${this.basket.getTotalPrice()} синапсов`;
+
+    }
+
+    updateBasketItems(): void {
+        this.basketItemsContainer.innerHTML = '';
+        if (this.basket.items.length === 0) {
+            this.basketItemsContainer.innerHTML = '<p>В корзине нет добавленных товаров.</p>';
+            return;
+        }
+        this.basket.items.forEach((item, index) => {
+            const itemElement = this.renderBasketItem(item, index);
+            this.basketItemsContainer.appendChild(itemElement);
+        });
     }
   
-    private renderBasketItem(item: IItem): HTMLElement {
-      const itemElement = this.modalElement.cloneNode(true) as HTMLElement;
-  
-      const itemImage = itemElement.querySelector('.item-image') as HTMLImageElement;
-      const itemTitle = itemElement.querySelector('.item-title') as HTMLElement;
-      const itemPrice = itemElement.querySelector('.item-price') as HTMLElement;
-      const removeButton = itemElement.querySelector('.remove-item') as HTMLElement;
-  /* 
-      itemImage.src = item.image;
+    private renderBasketItem(item: IItem, index: number): HTMLElement {
+
+      const itemElement = cloneTemplate('#card-basket');
+      const itemIndex = itemElement.querySelector('.basket__item-index') as HTMLElement;
+      const itemTitle = itemElement.querySelector('.card__title') as HTMLElement;
+      const itemPrice = itemElement.querySelector('.card__price') as HTMLElement;
+      const removeButton = itemElement.querySelector('.basket__item-delete') as HTMLElement;
+      
+      itemIndex.textContent = (index+1).toString();
       itemTitle.textContent = item.title;
-      itemPrice.textContent = `${item.price} ₽`;
-      removeButton.dataset.id = item.id; */
+      itemPrice.textContent = `${item.price} синапсов`;
+      removeButton.dataset.id = item.id; 
   
       return itemElement;
     }
   
     private addRemoveItemListeners(): void {
-      const removeButtons = this.modalElement.querySelectorAll('.remove-item');
+      const removeButtons = this.modalElement.querySelectorAll('.basket__item-delete');
       removeButtons.forEach(button => {
         button.addEventListener('click', (event: Event) => {
           const target = event.target as HTMLElement;
           const itemId = target.dataset.id!;
-          this.removeItem(itemId);
+          const item = this.basket.items.find(i => i.id === itemId);
+          this.removeItem(item);  
         });
       });
     }
   
-    private removeItem(itemId: string): void {
-      this.basket.removeItem(itemId);
+    private removeItem(item: IItem): void {
+      this.basket.removeItem(item);
     }
+
+    // Метод для включения/выключения кнопки «Оформить»
+   private toggleSubmitButton(): void {
+    if (this.basket.items.length > 0) {
+        this.submitButton.removeAttribute('disabled');  // Включаем кнопку, если есть товары
+    } else {
+        this.submitButton.setAttribute('disabled', 'disabled');// Отключаем кнопку, если товаров нет
+    }
+  }
+
   }
   
