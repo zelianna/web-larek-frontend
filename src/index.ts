@@ -5,6 +5,7 @@ import { ItemModalView } from './components/base/ItemModalView';
 import { EventEmitter } from './components/base/events';
 import { Basket } from './components/base/Basket';
 import { BasketModalView } from './components/base/BasketModalView';
+import { PaymentModalView } from './components/base/PaymentModalView';
 import { IItem } from './types';
 import { cloneTemplate } from './utils/utils';
 
@@ -14,10 +15,11 @@ const basket = new Basket(eventEmitter);
 // Загрузка товаров на главной странице
 document.addEventListener('DOMContentLoaded', async () => {
     const galleryElement = document.querySelector('.gallery') as HTMLElement;
-    const modalElement = document.querySelector('.basket') as HTMLElement;
-    const container = document.getElementById('modal-container');
-    const basketModalView = new BasketModalView(container, modalElement, basket, eventEmitter);
-
+    const basketElement = document.querySelector('.basket') as HTMLElement;
+    const orderTemplate = cloneTemplate('#order');
+    const container = document.getElementById('modal-container') as HTMLElement;
+    const basketModalView = new BasketModalView(container, basketElement, basket, eventEmitter);
+    const paymentModalView = new PaymentModalView(container, orderTemplate, basket, eventEmitter);  
     // Рендер товаров на главной странице
     if (galleryElement) {
         const mainPageView = new MainPageView(galleryElement, eventEmitter);
@@ -31,6 +33,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     basketIcon.addEventListener('click', () => {
         basketModalView.render();
     });
+    eventEmitter.on('basket:completed', () => {
+        paymentModalView.render();
+    })
 
 }); 
 

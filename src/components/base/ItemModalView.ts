@@ -31,6 +31,7 @@ export class ItemModalView extends ModalForm {
         const addButton = this.modalElement.querySelector('.card__button') as HTMLElement;
         addButton.addEventListener('click', () => {
           this.eventEmitter.emit('basket:itemAdded', { item: this.item });
+
         });
 
         this.openModal();  // Открытие модального окна

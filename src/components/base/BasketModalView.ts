@@ -1,9 +1,10 @@
 
-import { IItem, IBasket } from '../../types/index';
+import { IItem } from '../../types/index';
 import { Basket } from './Basket'; 
 import { ModalForm } from './ModalForm'; 
 import { EventEmitter } from './events';
 import { cloneTemplate } from '../../utils/utils';
+
 export class BasketModalView extends ModalForm {
     private basket: Basket;
     private eventEmitter: EventEmitter;
@@ -16,9 +17,6 @@ export class BasketModalView extends ModalForm {
       super(container, modalElement);
       this.basket = basket;
       this.eventEmitter = eventEmitter;
-      console.log('container: ', container);
-      
-      // Подписываемся на события модели
       this.eventEmitter.on('basket:changed', () => {
         if (this.isRendered) {
             this.render()
@@ -31,13 +29,21 @@ export class BasketModalView extends ModalForm {
       this.basketItemsContainer = this.modalElement.querySelector('.basket__list') as HTMLElement;
       this.totalElement = this.modalElement.querySelector('.basket__price') as HTMLElement;
       this.submitButton = this.modalElement.querySelector('.button') as HTMLButtonElement;
-
+      //this.submitButton = this.modalElement.querySelector('.order__button') as HTMLButtonElement;  
       this.updateBasketItems();
       this.updateBasketCounter();
       this.toggleSubmitButton(); 
       this.addRemoveItemListeners();
+      this.submitButton.addEventListener('click', this.onOrderSubmit.bind(this));
     }
   
+    // Обработчик нажатия на кнопку "Оформить"
+    private onOrderSubmit(): void {
+        this.closeModal();
+        this.eventEmitter.emit('basket:completed');
+    }
+
+
     updateBasketCounter(): void {
       this.totalElement.textContent = `${this.basket.getTotalPrice()} синапсов`;
 

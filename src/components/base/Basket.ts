@@ -31,22 +31,13 @@ export class Basket {
   }
 
   getTotalPrice(): number {
-    console.log('>>> total3', this.total);
     return this.total;
   }
 
   updateTotal(): void {
     this.total = 0;
-    console.log('total_1: ', this.total);
     this.total = this.items.reduce((sum, item) => sum + item.price, 0);
-    console.log('total_2: ', this.total);
   }
-
-  /* clearBasket(): void {
-    this.items = [];
-    this.updateTotal();
-    this.eventEmitter.emit('basket:cleared'); // Генерируем событие при очистке корзины
-  } */
 
   submitOrder(): Promise<string> {
     return new Promise((resolve, reject) => {
