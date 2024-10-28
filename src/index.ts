@@ -6,6 +6,7 @@ import { EventEmitter } from './components/base/events';
 import { Basket } from './components/base/Basket';
 import { BasketModalView } from './components/base/BasketModalView';
 import { PaymentModalView } from './components/base/PaymentModalView';
+import { ContactsModalView } from './components/base/ContactsModalView';
 import { IItem } from './types';
 import { cloneTemplate } from './utils/utils';
 
@@ -17,9 +18,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const galleryElement = document.querySelector('.gallery') as HTMLElement;
     const basketElement = document.querySelector('.basket') as HTMLElement;
     const orderTemplate = cloneTemplate('#order');
+    const contactsTemplate = cloneTemplate('#contacts');
     const container = document.getElementById('modal-container') as HTMLElement;
     const basketModalView = new BasketModalView(container, basketElement, basket, eventEmitter);
     const paymentModalView = new PaymentModalView(container, orderTemplate, basket, eventEmitter);  
+    const contactsModalView = new ContactsModalView(container, contactsTemplate, basket, eventEmitter);  
     // Рендер товаров на главной странице
     if (galleryElement) {
         const mainPageView = new MainPageView(galleryElement, eventEmitter);
@@ -35,7 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     eventEmitter.on('basket:completed', () => {
         paymentModalView.render();
-    })
+    });
+    eventEmitter.on('payment:completed', () => {
+        console.log('>>>>>>>>>: ', 'payment:completed');
+        contactsModalView.render();
+    });
 
 }); 
 

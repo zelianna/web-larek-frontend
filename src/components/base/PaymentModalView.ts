@@ -20,7 +20,6 @@ export class PaymentModalView extends ModalForm {
   render(): void {
     this.openModal();
     const paymentButtons = this.container.querySelectorAll('.order__buttons button');
-    console.log('>>>>>>', this.container)
     this.addressInput = this.container.querySelector('input[name="address"]') as HTMLInputElement;
     this.submitButton = this.container.querySelector('.order__button') as HTMLButtonElement;
 
@@ -32,45 +31,43 @@ export class PaymentModalView extends ModalForm {
 
     // Начальная валидация (кнопка будет отключена)
     this.validateForm();
+    this.submitButton.addEventListener('click', this.onPaymentSubmit.bind(this));
   }
     // Метод для обработки выбора способа оплаты
   private onPaymentMethodSelect(event: Event): void {
     const button = event.target as HTMLButtonElement;
-    this.selectedPaymentMethod = button.name; // Сохраняем выбранный способ оплаты
-    this.validateForm(); // Проверяем условия для активации кнопки
+    /* button.classList.remove('.button_alt');
+    button.classList.add('.button_alt-active'); */
+    this.selectedPaymentMethod = button.name; 
+    this.validateForm();
   }
 
-  // Метод для проверки условий и активации/деактивации кнопки
   private validateForm(): void {
-    const isAddressValid = this.addressInput?.value.trim().length > 0; // Адрес не должен быть пустым
-    const isPaymentMethodSelected = this.selectedPaymentMethod !== null; // Должен быть выбран способ оплаты
+    const isAddressValid = this.addressInput?.value.trim().length > 0; // Адрес не пустой
+    const isPaymentMethodSelected = this.selectedPaymentMethod !== null; // Выбран способ оплаты
 
     if (isAddressValid && isPaymentMethodSelected) {
-      this.submitButton?.removeAttribute('disabled'); // Активируем кнопку
+      this.submitButton?.removeAttribute('disabled'); 
     } else {
-      this.submitButton?.setAttribute('disabled', 'true'); // Отключаем кнопку
+      this.submitButton?.setAttribute('disabled', 'true'); 
     }
   }
 
-  onPaymentSubmit(paymentDetails: { paymentMethod: string, shippingAddress: string }): void {
-          const { paymentMethod, shippingAddress } = paymentDetails;
-
-    // Простая валидация данных
+  onPaymentSubmit(event: Event): void {
+    event.preventDefault();
+    const shippingAddress = this.addressInput?.value.trim();
+    const paymentMethod = this.selectedPaymentMethod;
     if (!paymentMethod || !shippingAddress) {
       this.showError('Необходимо заполнить все поля');
       return;
-    } 
-
-     // Эмитим событие подтверждения заказа
-    this.eventEmitter.emit('payment:completed', { paymentMethod, shippingAddress }); 
-
-    // Закрываем модальное окно после подтверждения
+    }
     this.closeModal();
+    this.eventEmitter.emit('payment:completed', { paymentMethod, shippingAddress  }); 
   } 
 
   showError(message: string): void {
     this.container.innerHTML = `<div class="error">${message}</div>`;
-}
+  }
 
 
 
