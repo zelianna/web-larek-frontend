@@ -68,21 +68,6 @@ export class PaymentModalView extends ModalForm {
   showError(message: string): void {
     this.container.innerHTML = `<div class="error">${message}</div>`;
   }
-
-
-
-
-
-/* 
-      form.addEventListener('submit', (event: Event) => {
-        event.preventDefault();
-        this.eventEmitter.emit('basket:placed', { data: this.basket });
-        const paymentMethod = (form.querySelector('#payment-method') as HTMLSelectElement).value;
-        const shippingAddress = (form.querySelector('input[name="address"]') as HTMLInputElement).value; 
-        //this.onPaymentSubmit({ /*paymentMethod, shippingAddress });
-      }); */
-
- 
   
 
 }

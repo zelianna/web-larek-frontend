@@ -7,6 +7,7 @@ import { Basket } from './components/base/Basket';
 import { BasketModalView } from './components/base/BasketModalView';
 import { PaymentModalView } from './components/base/PaymentModalView';
 import { ContactsModalView } from './components/base/ContactsModalView';
+import { SuccessOrderModalView } from './components/base/SuccessOrderModalView';
 import { IItem } from './types';
 import { cloneTemplate } from './utils/utils';
 
@@ -19,10 +20,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const basketElement = document.querySelector('.basket') as HTMLElement;
     const orderTemplate = cloneTemplate('#order');
     const contactsTemplate = cloneTemplate('#contacts');
+    const successTemplate = cloneTemplate('#success');
     const container = document.getElementById('modal-container') as HTMLElement;
     const basketModalView = new BasketModalView(container, basketElement, basket, eventEmitter);
     const paymentModalView = new PaymentModalView(container, orderTemplate, basket, eventEmitter);  
     const contactsModalView = new ContactsModalView(container, contactsTemplate, basket, eventEmitter);  
+    const successOrderModalView = new SuccessOrderModalView(container, successTemplate, basket, eventEmitter);
     // Рендер товаров на главной странице
     if (galleryElement) {
         const mainPageView = new MainPageView(galleryElement, eventEmitter);
@@ -40,8 +43,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         paymentModalView.render();
     });
     eventEmitter.on('payment:completed', () => {
-        console.log('>>>>>>>>>: ', 'payment:completed');
+        //console.log('>>>>>>>>>: ', 'payment:completed');
         contactsModalView.render();
+    });
+    eventEmitter.on('contacts:completed', () => {
+        console.log('>>>>>>>>>: ', 'contacts:completed');
+        successOrderModalView.render();
+        console.log('>>>>>>>>>: successOrderModalView rendered');
     });
 
 }); 
