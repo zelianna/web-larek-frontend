@@ -28,8 +28,7 @@ export class BasketModalView extends ModalForm {
       this.openModal();
       this.basketItemsContainer = this.modalElement.querySelector('.basket__list') as HTMLElement;
       this.totalElement = this.modalElement.querySelector('.basket__price') as HTMLElement;
-      this.submitButton = this.modalElement.querySelector('.button') as HTMLButtonElement;
-      //this.submitButton = this.modalElement.querySelector('.order__button') as HTMLButtonElement;  
+      this.submitButton = this.modalElement.querySelector('.button') as HTMLButtonElement; 
       this.updateBasketItems();
       this.updateBasketCounter();
       this.toggleSubmitButton(); 
@@ -71,7 +70,7 @@ export class BasketModalView extends ModalForm {
       
       itemIndex.textContent = (index+1).toString();
       itemTitle.textContent = item.title;
-      itemPrice.textContent = `${item.price} синапсов`;
+      itemPrice.textContent = `${item.price ?? 0} синапсов`;
       removeButton.dataset.id = item.id; 
   
       return itemElement;
@@ -91,16 +90,22 @@ export class BasketModalView extends ModalForm {
   
     private removeItem(item: IItem): void {
       this.basket.removeItem(item);
+      this.eventEmitter.emit('basket:changed');
     }
 
-    // Метод для включения/выключения кнопки «Оформить»
-   private toggleSubmitButton(): void {
-    if (this.basket.items.length > 0) {
-        this.submitButton.removeAttribute('disabled');  // Включаем кнопку, если есть товары
-    } else {
-        this.submitButton.setAttribute('disabled', 'disabled');// Отключаем кнопку, если товаров нет
-    }
+  // Метод для включения/выключения кнопки «Оформить»
+  private toggleSubmitButton(): void {
+  // Если в корзине только бесценный товар - кнопка покупки неактивна
+  // Пустая корзина - кнопка покупки неактивна  
+  const hasPurchasableItems = this.basket.items.some(item => item.price && item.price > 0);
+
+  if (hasPurchasableItems) {
+      this.submitButton.removeAttribute('disabled');  // Кнопка активна, если есть товары с ненулевой ценой
+  } else {
+      this.submitButton.setAttribute('disabled', 'disabled'); 
   }
+}
+
 
   }
   

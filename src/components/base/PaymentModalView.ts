@@ -9,6 +9,7 @@ export class PaymentModalView extends ModalForm {
   private selectedPaymentMethod: string | null = null;
   private addressInput: HTMLInputElement | null = null;
   private submitButton: HTMLButtonElement | null = null;
+  private paymentButtons: NodeListOf<HTMLButtonElement> | null = null;
 
 
   constructor(container: HTMLElement, orderElement: HTMLElement, basket: Basket, eventEmitter: EventEmitter) {
@@ -19,12 +20,14 @@ export class PaymentModalView extends ModalForm {
   
   render(): void {
     this.openModal();
-    const paymentButtons = this.container.querySelectorAll('.order__buttons button');
+    this.paymentButtons = this.container.querySelectorAll('.order__buttons button');
+
     this.addressInput = this.container.querySelector('input[name="address"]') as HTMLInputElement;
     this.submitButton = this.container.querySelector('.order__button') as HTMLButtonElement;
 
+
     // Добавляем обработчики событий
-    paymentButtons.forEach((button) => {
+    this.paymentButtons.forEach((button) => {
       button.addEventListener('click', (event) => this.onPaymentMethodSelect(event));
     });
     this.addressInput.addEventListener('input', () => this.validateForm());
@@ -36,8 +39,16 @@ export class PaymentModalView extends ModalForm {
     // Метод для обработки выбора способа оплаты
   private onPaymentMethodSelect(event: Event): void {
     const button = event.target as HTMLButtonElement;
-    /* button.classList.remove('.button_alt');
-    button.classList.add('.button_alt-active'); */
+
+    // Сначала убираем класс .button_alt-active у всех кнопок
+    this.paymentButtons.forEach((btn) => {
+        btn.classList.remove('button_alt-active');
+    });
+
+    // Добавляем класс .button_alt-active к выбранной кнопке
+    button.classList.add('button_alt-active');
+
+
     this.selectedPaymentMethod = button.name; 
     this.validateForm();
   }

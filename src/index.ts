@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const successOrderModalView = new SuccessOrderModalView(container, successTemplate, basket, eventEmitter);
     // Рендер товаров на главной странице
     if (galleryElement) {
-        const mainPageView = new MainPageView(galleryElement, eventEmitter);
+        const mainPageView = new MainPageView(galleryElement, eventEmitter, basket);
         const items = await fetchItems();
         //console.log(items);
         mainPageView.renderItems(items);

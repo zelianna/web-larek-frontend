@@ -2,17 +2,42 @@ import { IItem } from '../../types/index';
 import { CDN_URL } from '../../utils/constants';
 import { ItemModalView } from './ItemModalView';
 import { EventEmitter } from '../../components/base/events';
+import { Basket } from './Basket'; 
 
 export class MainPageView {
     private galleryElement: HTMLElement;
     private itemModalView: ItemModalView;
     private eventEmitter: EventEmitter;
+    private basketCounterElement: HTMLElement; 
+    private basket: Basket;
 
-
-    constructor(galleryElement: HTMLElement, eventEmitter: EventEmitter) {
+    constructor(galleryElement: HTMLElement, eventEmitter: EventEmitter, basket: Basket) {
         this.galleryElement = galleryElement;
         this.eventEmitter = eventEmitter;
+        this.basket = basket;
+        
+        // Привязываем элемент счётчика корзины
+        this.basketCounterElement = document.querySelector('.header__basket-counter') as HTMLElement;
+                
+        // Подписываемся на события изменения корзины
+        this.eventEmitter.on('basket:changed', this.updateBasketCounter.bind(this));
+
+
     }
+
+    // Метод для обновления счётчика товаров в корзине
+    updateBasketCounter(): void {
+        const itemCount = this.getBasketItemCount();
+        //console.log('>>>>>>>>>itemCount: ', itemCount);
+        this.basketCounterElement.textContent = itemCount.toString();
+    }
+
+    // Вспомогательный метод для получения количества товаров в корзине
+    private getBasketItemCount(): number {
+        // Эмитим событие для получения количества товаров (или получаем из хранилища корзины)
+        return this.basket?.items.length ?? 0;
+    }
+
 
     // Метод для отображения товаров
     renderItems(items: IItem[]): void {
