@@ -60,7 +60,8 @@ eventEmitter.on('card-preview:open', (event: { data: IItem }) => {
     const newItemModalView = new ItemModalView(
         container,
         modalElement, 
-        eventEmitter
+        eventEmitter,
+        basket
     );
     newItemModalView.renderItem(event.data);
 })
