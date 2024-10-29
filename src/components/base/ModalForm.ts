@@ -11,6 +11,14 @@ export abstract class ModalForm {
         closeButton.addEventListener('click', () => {
             this.closeModal();
         });
+        // Закрытие по клику на оверлей
+        this.container.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement;
+            if (target === this.container) {
+                this.closeModal();
+            }
+        });
+
         this.isRendered = false;
     }
 
