@@ -30,6 +30,11 @@ export class Basket {
     this.eventEmitter.emit('basket:changed');
   }
 
+  clear(): void {
+    this.items = [];
+    this.total = 0;
+  }
+
   getTotalPrice(): number {
     return this.total;
   }

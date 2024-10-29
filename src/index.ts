@@ -43,14 +43,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         paymentModalView.render();
     });
     eventEmitter.on('payment:completed', () => {
-        //console.log('>>>>>>>>>: ', 'payment:completed');
         contactsModalView.render();
     });
     eventEmitter.on('contacts:completed', () => {
-        console.log('>>>>>>>>>: ', 'contacts:completed');
         successOrderModalView.render();
-        console.log('>>>>>>>>>: successOrderModalView rendered');
     });
+    // Обновление счётчика при изменении корзины
+    eventEmitter.on('basket:changed', () => {
+        const basketCounterElement = document.querySelector('.header__basket-counter') as HTMLElement;
+        basketCounterElement.textContent = basket.items.length.toString();
+    });
+
 
 }); 
 

@@ -121,6 +121,8 @@ submitOrder
 1. Класс MainPageView:
    - **Методы**:
      renderItems(items: IItem[]): отображение списка товаров на главной странице
+     updateBasketCounter(): void  Обновление счетчика товаров в корзине
+     getBasketItemCount(): number Возвращает количество товаров в корзине 
      showError(message: string): отображение ошибки
 
 2. Класс ItemCardView:
@@ -130,30 +132,43 @@ submitOrder
 
 3. Класс ItemModalView:
    - **Методы**:
-     render(item: IItem): отображение информации о товаре
-     onAddToBasketClick(item: IItem): обработка добавления товара в корзину
-     closeModal(): закрытие модального окна
+     renderItem(item: IItem): void Устанавливает текущий товар и отображает его в модальном окне
+     render(): void отображение информации о товаре
+     onAddToBasketClick(item: IItem): void обработка добавления товара в корзину
+     closeModal(): void закрытие модального окна
 
 4. Класс BasketModalView:
    - **Методы**:
      renderBasket(basket: IBasket): отображение содержимого корзины
      onRemoveItemClick(item: IItem): обработка удаления товара из корзины
      closeModal(): закрытие модального окна
+     updateBasketCounter(): Обновляет элемент с общей стоимостью корзины
+     updateBasketItems(): Обновляет список товаров в корзине
+     renderBasketItem(item: IItem, index: number): Создает элемент для отображения товара в корзине
+     addRemoveItemListeners(): Добавляет обработчики кликов для удаления товаров из корзины
+     removeItem(item: IItem): Удаляет товар из корзины
+     toggleSubmitButton(): Отражение/скрытие кнопки оформления заказа 
 
 5. Класс PaymentModalView:
    - **Методы**:
-     renderPaymentForm(basket: IBasket): отображение формы оплаты заказа
+     renderPaymentForm(basket: IBasket): форма оплаты заказа
      onPaymentSubmit(paymentDetails: { paymentMethod: string, shippingAddress: string }): обработка отправки данных оплаты
      showError(message: string): отображение ошибки при оплате
+     render(): Отображение формы оплаты
+     onPaymentMethodSelect(event: Event): Выбор способа оплаты
+     validateForm(): Валидация полей формы
 
 6. Класс ContactsModalView: отображение контактов пользователя
    - **Методы**: 
-     renderContactForm(user: IUser): отображение контактной информации
+     renderContactForm(user: IUser): форма для ввода контактной информации
      onSubmitContactForm: обработка отправки контактов пользователя
+     showError(message: string): Отображение сообщения об ошибке 
+     render(): Отображает форму
+     validateForm(): валидация формы
 
 7. Класс SuccessOrderModalView: отображение сообщения об успешном оформлении заказа
    - **Методы**: 
-     renderSuccessMessage(): отображение сообщения об успешном заказе
+     render(): отображение сообщения об успешном заказе
  
  ### API 
  Класс Api: базовая логика отправки запросов

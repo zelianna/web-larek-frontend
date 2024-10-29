@@ -13,7 +13,6 @@ export class SuccessOrderModalView extends ModalForm {
   }
   
   render(): void {
-    console.log('>>>>>>>>>: ', 'openSuccess');
     this.openModal();
 
   }
