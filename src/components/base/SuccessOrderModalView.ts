@@ -4,17 +4,19 @@ import { EventEmitter } from './events';
 
 export class SuccessOrderModalView extends ModalForm {
   private eventEmitter: EventEmitter;
-  private basket: Basket;
 
-  constructor(container: HTMLElement, successElement: HTMLElement, basket: Basket, eventEmitter: EventEmitter) {
+  constructor(container: HTMLElement, successElement: HTMLElement, eventEmitter: EventEmitter) {
     super(container, successElement);
-    this.basket = basket;
     this.eventEmitter = eventEmitter;
   }
-  
-  render(): void {
-    this.openModal();
 
+  render() {
+    this.openModal();
+  }
+  
+  updateTotal(total: number): void {
+    const descriptionElement = this.container.querySelector('.order-success__description') as HTMLElement;
+    descriptionElement.textContent = `Списано ${total} синапсов`;
   }
 }
   

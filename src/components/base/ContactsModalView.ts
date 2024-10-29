@@ -1,10 +1,8 @@
 import { ModalForm } from './ModalForm';
-import { Basket } from './Basket';
 import { EventEmitter } from './events';
 
 export class ContactsModalView extends ModalForm {
 	private eventEmitter: EventEmitter;
-	private basket: Basket;
 	private emailInput: HTMLInputElement | null = null;
 	private phoneInput: HTMLButtonElement | null = null;
 	private submitButton: HTMLButtonElement | null = null;
@@ -12,11 +10,9 @@ export class ContactsModalView extends ModalForm {
 	constructor(
 		container: HTMLElement,
 		contactsElement: HTMLElement,
-		basket: Basket,
 		eventEmitter: EventEmitter
 	) {
 		super(container, contactsElement);
-		this.basket = basket;
 		this.eventEmitter = eventEmitter;
 	}
 
@@ -64,12 +60,8 @@ export class ContactsModalView extends ModalForm {
 		//this.closeModal();
 		//this.eventEmitter.emit('contacts:completed', { email, phone });
 		try {
-			const responseMessage = await this.basket.submitOrder(); // Асинхронный вызов
-			console.log('Order submitted:', responseMessage);
-			this.basket.clear(); // Очищаем корзину
-			this.eventEmitter.emit('basket:changed'); // Обновляем счётчик корзины
+			this.eventEmitter.emit('contacts:completed', { email, phone }); // Переход к SuccessModalView
 			this.closeModal();
-			this.eventEmitter.emit('contacts:completed'); // Переход к SuccessModalView
 		} catch (error) {
 			this.showError(`Ошибка отправки заказа: ${error}`);
 		}

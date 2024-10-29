@@ -69,3 +69,10 @@ export interface ContactsModalView {
 export interface SuccessOrderModalView {
     renderSuccessMessage(): void;  // Модальное окно, которое отображается после успешного завершения заказа
 }
+
+export interface IOrderData {
+    email?: string,
+    phone?: string,
+    payment?: string,
+    address?: string
+}

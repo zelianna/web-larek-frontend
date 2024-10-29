@@ -1,9 +1,7 @@
 import { ModalForm } from './ModalForm';
-import { Basket } from './Basket';
 import { EventEmitter } from './events';
 export class PaymentModalView extends ModalForm {
 	private eventEmitter: EventEmitter;
-	private basket: Basket;
 	private selectedPaymentMethod: string | null = null;
 	private addressInput: HTMLInputElement | null = null;
 	private submitButton: HTMLButtonElement | null = null;
@@ -12,11 +10,9 @@ export class PaymentModalView extends ModalForm {
 	constructor(
 		container: HTMLElement,
 		orderElement: HTMLElement,
-		basket: Basket,
 		eventEmitter: EventEmitter
 	) {
 		super(container, orderElement);
-		this.basket = basket;
 		this.eventEmitter = eventEmitter;
 	}
 
@@ -83,8 +79,8 @@ export class PaymentModalView extends ModalForm {
 		}
 		this.closeModal();
 		this.eventEmitter.emit('payment:completed', {
-			paymentMethod,
-			shippingAddress,
+			payment: paymentMethod,
+			address: shippingAddress,
 		});
 	}
 

@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const successTemplate = cloneTemplate('#success');
     const container = document.getElementById('modal-container') as HTMLElement;
     const basketModalView = new BasketModalView(container, basketElement, basket, eventEmitter);
-    const paymentModalView = new PaymentModalView(container, orderTemplate, basket, eventEmitter);  
-    const contactsModalView = new ContactsModalView(container, contactsTemplate, basket, eventEmitter);  
-    const successOrderModalView = new SuccessOrderModalView(container, successTemplate, basket, eventEmitter);
+    const paymentModalView = new PaymentModalView(container, orderTemplate, eventEmitter);  
+    const contactsModalView = new ContactsModalView(container, contactsTemplate, eventEmitter);  
+    const successOrderModalView = new SuccessOrderModalView(container, successTemplate, eventEmitter);
     // Рендер товаров на главной странице
     if (galleryElement) {
         const mainPageView = new MainPageView(galleryElement, eventEmitter, basket);
@@ -45,8 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     eventEmitter.on('payment:completed', () => {
         contactsModalView.render();
     });
-    eventEmitter.on('contacts:completed', () => {
+    eventEmitter.on('basket:saved', (event: { total: number }) => {
         successOrderModalView.render();
+        successOrderModalView.updateTotal(event.total);
     });
     // Обновление счётчика при изменении корзины
     eventEmitter.on('basket:changed', () => {
