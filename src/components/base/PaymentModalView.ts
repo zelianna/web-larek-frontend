@@ -1,6 +1,6 @@
-import { ModalForm } from './ModalForm';
+import { ModalView } from './ModalView';
 import { EventEmitter } from './events';
-export class PaymentModalView extends ModalForm {
+/* export class PaymentModalView extends ModalView {
 	private eventEmitter: EventEmitter;
 	private selectedPaymentMethod: string | null = null;
 	private addressInput: HTMLInputElement | null = null;
@@ -87,4 +87,4 @@ export class PaymentModalView extends ModalForm {
 	showError(message: string): void {
 		this.container.innerHTML = `<div class="error">${message}</div>`;
 	}
-}
+} */

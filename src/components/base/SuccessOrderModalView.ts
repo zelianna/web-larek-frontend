@@ -1,8 +1,8 @@
-import { ModalForm } from './ModalForm';
+import { Component } from './Component';
 import { Basket } from './Basket'; 
 import { EventEmitter } from './events';
-
-export class SuccessOrderModalView extends ModalForm {
+/* 
+export class SuccessOrderModalView extends Component {
   private eventEmitter: EventEmitter;
 
   constructor(container: HTMLElement, successElement: HTMLElement, eventEmitter: EventEmitter) {
@@ -20,4 +20,4 @@ export class SuccessOrderModalView extends ModalForm {
   }
 }
   
-
+ */

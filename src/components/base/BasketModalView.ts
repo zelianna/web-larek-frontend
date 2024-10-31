@@ -1,10 +1,10 @@
 import { IItem } from '../../types/index';
 import { Basket } from './Basket';
-import { ModalForm } from './ModalForm';
+import { ModalView } from './ModalView';
 import { EventEmitter } from './events';
 import { cloneTemplate } from '../../utils/utils';
-
-export class BasketModalView extends ModalForm {
+/* 
+export class BasketModalView extends ModalView {
 	private basket: Basket;
 	private eventEmitter: EventEmitter;
 
@@ -122,3 +122,4 @@ export class BasketModalView extends ModalForm {
 		}
 	}
 }
+ */

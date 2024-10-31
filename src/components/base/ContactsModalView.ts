@@ -1,6 +1,6 @@
-import { ModalForm } from './ModalForm';
+import { ModalView } from './ModalView';
 import { EventEmitter } from './events';
-
+/* 
 export class ContactsModalView extends ModalForm {
 	private eventEmitter: EventEmitter;
 	private emailInput: HTMLInputElement | null = null;
@@ -70,3 +70,4 @@ export class ContactsModalView extends ModalForm {
 		this.container.innerHTML = `<div class="error">${message}</div>`;
 	}
 }
+ */
