@@ -1,14 +1,11 @@
 import { CDN_URL } from '../../utils/constants';
 import { IItem } from '../../types';
 import { EventEmitter } from './events';
-import { Basket } from './Basket';
 import { Component } from './Component';
 
 export class ItemModalView extends Component {
 	private eventEmitter: EventEmitter;
 	private isItemInBasket: boolean = false;
-	private basket: Basket;
-	private modalElement: HTMLElement;
 
 	private titleElement: HTMLElement;
 	private priceElement: HTMLElement;
@@ -17,31 +14,33 @@ export class ItemModalView extends Component {
 	private addButton: HTMLButtonElement;
 
 	constructor(
-		modalElement: HTMLElement,
+		container: HTMLElement,
 		item: IItem,
 		eventEmitter: EventEmitter,
-		basket: Basket
 	) {
-		super(modalElement);
-		this.modalElement = modalElement;
+		super(container);
 		this.eventEmitter = eventEmitter;
-		this.basket = basket;
-		this.titleElement = this.modalElement.querySelector(
+		this.titleElement = container.querySelector(
 			'.card__title'
 		) as HTMLElement;
-		this.priceElement = this.modalElement.querySelector(
+		this.priceElement = container.querySelector(
 			'.card__price'
 		) as HTMLElement;
-		this.descriptionElement = this.modalElement.querySelector(
+		this.descriptionElement = container.querySelector(
 			'.card__text'
 		) as HTMLElement;
-		this.imageElement = this.modalElement.querySelector(
+		this.imageElement = container.querySelector(
 			'.card__image'
 		) as HTMLImageElement;
-		this.addButton = this.modalElement.querySelector(
+		this.addButton = container.querySelector(
 			'.card__button'
 		) as HTMLButtonElement;
 		this.item = item;
+		this.addButton.addEventListener('click', () => {
+			this.eventEmitter.emit('basket:itemAdded', { item });
+			this.isItemInBasket = true;
+			this.addButton.disabled = true;
+		});
 	}
 
 	set item(item: IItem) {
@@ -54,18 +53,12 @@ export class ItemModalView extends Component {
 			(basketItem) => basketItem.id === item.id
 		); 
 		this.addButton.disabled = this.isItemInBasket; // Делаем кнопку неактивной, если товар уже в корзине
-		
-		this.addButton.addEventListener('click', () => {
-			if (this.item && !this.isItemInBasket) {
-				this.eventEmitter.emit('basket:itemAdded', { item: this.item });
-				this.isItemInBasket = true;
-				this.addButton.disabled = true;
-			}
-		});*/
+		*/
 	}
+
 
 	render(): HTMLElement {
         super.render();
-		return this.modalElement;
+		return this.container;
 	}
 }

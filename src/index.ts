@@ -2,6 +2,7 @@ import './scss/styles.scss';
 import { MainPageView } from './components/base/MainPageView';
 import { fetchItems } from './components/base/itemsService';
 import { ItemModalView } from './components/base/ItemModalView'; 
+import { BasketModalView } from './components/base/BasketModalView';
 import { EventEmitter } from './components/base/events';
 import { Basket } from './components/base/Basket';
 /* import { BasketModalView } from './components/base/BasketModalView';
@@ -31,9 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const successOrderModalView = new SuccessOrderModalView(container, successTemplate, eventEmitter); 
     // Открытие корзины
     const basketIcon = document.querySelector('#basket-icon') as HTMLElement;
-    basketIcon.addEventListener('click', () => {
-        basketModalView.render();
-    });
+    
     eventEmitter.on('basket:completed', () => {
         paymentModalView.render();
     });
@@ -59,15 +58,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         const basketCounterElement = document.querySelector('.header__basket-counter') as HTMLElement;
         basketCounterElement.textContent = basket.items.length.toString();
     });
+
+    eventEmitter.on('card-preview:open', (event: { data: IItem }) => {
+        const cardElement = cloneTemplate('#card-preview');
+        const itemContent = new ItemModalView(
+            cardElement,
+            event.data,
+            eventEmitter,
+    
+        );
+        modalView.render(itemContent);
+    });
+    
+    const basketIcon = document.querySelector('#basket-icon') as HTMLElement;
+    basketIcon.addEventListener('click', () => {
+        const basketElement = cloneTemplate('#basket');
+        const basketContent = new BasketModalView(
+            basketElement,
+            basket,
+            eventEmitter
+        );
+        modalView.render(basketContent);
+    });
 }); 
 
-eventEmitter.on('card-preview:open', (event: { data: IItem }) => {
-    const cardElement = cloneTemplate('#card-preview');
-    const itemContent = new ItemModalView(
-        cardElement,
-        event.data,
-        eventEmitter,
-        basket
-    );
-    modalView.render(itemContent);
-})
+

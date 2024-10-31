@@ -1,4 +1,5 @@
 export abstract class Component {
+
     protected constructor(protected readonly container: HTMLElement) {
     }
 
@@ -19,23 +20,14 @@ export abstract class Component {
         }
     }
 
-    protected setHidden(element: HTMLElement) {/* 
+    protected setHidden() {/* 
         element.style.display = 'none';
         this.modalElement.classList.remove('modal_active');
         this.modalElement.classList.remove('page_wrapper_locked'); */
     }
 
-    protected setVisible(element: HTMLElement) {
-        element.style.removeProperty('display');
-    }
-
-    protected setImage(element: HTMLImageElement, src: string, alt?: string) {
-        if (element) {
-            element.src = src;
-            if (alt) {
-                element.alt = alt;
-            }
-        }
+    protected setVisible() {
+        //element.style.removeProperty('display');
     }
 
     render(data?: any): HTMLElement {

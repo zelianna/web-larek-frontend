@@ -1,54 +1,47 @@
-import { IItem } from '../../types/index';
 import { Basket } from './Basket';
-import { ModalView } from './ModalView';
 import { EventEmitter } from './events';
-import { cloneTemplate } from '../../utils/utils';
-/* 
-export class BasketModalView extends ModalView {
+import { Component } from './Component';
+import { IItem } from '../../types';
+
+export class BasketModalView extends Component {
 	private basket: Basket;
 	private eventEmitter: EventEmitter;
-
 	private submitButton: HTMLElement;
 	private totalElement: HTMLElement;
 	private basketItemsContainer: HTMLElement;
 
 	constructor(
 		container: HTMLElement,
-		modalElement: HTMLElement,
 		basket: Basket,
 		eventEmitter: EventEmitter
 	) {
-		super(container, modalElement);
+		super(container);
 		this.basket = basket;
 		this.eventEmitter = eventEmitter;
-		this.eventEmitter.on('basket:changed', () => {
-			if (this.isRendered) {
-				this.render();
-			}
-		});
 	}
 
-	render(): void {
-		this.openModal();
-		this.basketItemsContainer = this.modalElement.querySelector(
+	render(): HTMLElement {
+		super.render();
+		this.basketItemsContainer = this.container.querySelector(
 			'.basket__list'
 		) as HTMLElement;
-		this.totalElement = this.modalElement.querySelector(
+		this.totalElement = this.container.querySelector(
 			'.basket__price'
 		) as HTMLElement;
-		this.submitButton = this.modalElement.querySelector(
+		this.submitButton = this.container.querySelector(
 			'.button'
 		) as HTMLButtonElement;
 		this.updateBasketItems();
 		this.updateBasketCounter();
 		this.toggleSubmitButton();
 		this.addRemoveItemListeners();
-		this.submitButton.addEventListener('click', this.onOrderSubmit.bind(this));
+		//this.submitButton.addEventListener('click', this.container.bind(this)); 
+		return this.container;
 	}
 
 	// Обработчик нажатия на кнопку Оформить
 	private onOrderSubmit(): void {
-		this.closeModal();
+		//this.setHidden(this.container);
 		this.eventEmitter.emit('basket:completed');
 	}
 
@@ -57,7 +50,7 @@ export class BasketModalView extends ModalView {
 	}
 
 	updateBasketItems(): void {
-		this.basketItemsContainer.innerHTML = '';
+		/* this.basketItemsContainer.innerHTML = '';
 		if (this.basket.items.length === 0) {
 			this.basketItemsContainer.innerHTML =
 				'<p>В корзине нет добавленных товаров.</p>';
@@ -66,11 +59,11 @@ export class BasketModalView extends ModalView {
 		this.basket.items.forEach((item, index) => {
 			const itemElement = this.renderBasketItem(item, index);
 			this.basketItemsContainer.appendChild(itemElement);
-		});
+		}); */
 	}
 
-	private renderBasketItem(item: IItem, index: number): HTMLElement {
-		const itemElement = cloneTemplate('#card-basket');
+	private renderBasketItem(item: IItem, index: number)/* : HTMLElement */ {
+		/* const itemElement = cloneTemplate('#card-basket');
 		const itemIndex = itemElement.querySelector(
 			'.basket__item-index'
 		) as HTMLElement;
@@ -85,11 +78,11 @@ export class BasketModalView extends ModalView {
 		itemPrice.textContent = `${item.price ?? 0} синапсов`;
 		removeButton.dataset.id = item.id;
 
-		return itemElement;
+		return itemElement; */
 	}
 
 	private addRemoveItemListeners(): void {
-		const removeButtons = this.modalElement.querySelectorAll(
+		const removeButtons = this.container.querySelectorAll(
 			'.basket__item-delete'
 		);
 		removeButtons.forEach((button) => {
@@ -120,6 +113,5 @@ export class BasketModalView extends ModalView {
 		} else {
 			this.submitButton.setAttribute('disabled', 'disabled');
 		}
-	}
+	} 
 }
- */
