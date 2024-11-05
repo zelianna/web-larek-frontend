@@ -1,7 +1,7 @@
 
 import { IItem, IOrderData } from '../../types/index';
 import { EventEmitter } from './events';
-import { submit } from './basketService';
+import { submit } from '../../index';
 
 export class Basket {
   items: IItem[] = [];

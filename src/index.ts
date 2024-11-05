@@ -1,6 +1,5 @@
 import './scss/styles.scss';
 import { MainPageView } from './components/base/MainPageView';
-import { fetchItems } from './components/base/itemsService';
 import { ItemModalView } from './components/base/ItemModalView'; 
 import { BasketModalView } from './components/base/BasketModalView';
 import { EventEmitter } from './components/base/events';
@@ -11,6 +10,33 @@ import { SuccessOrderModalView } from './components/base/SuccessOrderModalView';
 import { IItem } from './types';
 import { cloneTemplate } from './utils/utils';
 import { ModalView } from './components/base/ModalView';
+import { Api, ApiListResponse } from './components/base/api';
+import { API_URL } from './utils/constants'; 
+
+const api = new Api(API_URL);
+
+export async function fetchItems(): Promise<IItem[]> {
+    try {
+        const response = await api.get('/product/');
+        return (response as ApiListResponse<IItem>).items; // Приведение ответа к типу ApiListResponse<IItem>
+    } catch (error) {
+        console.error('Ошибка при получении товаров:', error);
+        throw error; 
+    }
+}
+
+
+export async function submit(data: any): Promise<string> {
+    try {
+        const response = await api.post('/order/', data);
+        console.log('>>>', response)
+        return (response as any).total;
+    } catch (error) {
+        console.error('Ошибка при сохранении заказа:', error);
+        throw error; 
+    }
+}
+
 
 const eventEmitter = new EventEmitter();
 const basket = new Basket(eventEmitter);
