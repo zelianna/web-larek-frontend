@@ -49,7 +49,7 @@ export class ItemModalView extends Component {
 			item.price !== null ? `${item.price} синапсов` : 'Бесценно';
 		this.descriptionElement.textContent = item.description;
 		this.imageElement.src = CDN_URL + item.image;
-		/* this.isItemInBasket = this.basket.items.some(
+		/*this.isItemInBasket = this.basket.items.some(
 			(basketItem) => basketItem.id === item.id
 		); 
 		this.addButton.disabled = this.isItemInBasket; // Делаем кнопку неактивной, если товар уже в корзине

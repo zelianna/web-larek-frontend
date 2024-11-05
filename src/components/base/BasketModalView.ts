@@ -1,6 +1,5 @@
 import { Component } from './Component';
 import { IItem } from '../../types';
-
 import { cloneTemplate } from '../../utils/utils';
 
 export class BasketModalView extends Component {

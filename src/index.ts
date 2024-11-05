@@ -100,8 +100,7 @@ eventEmitter.on('payment:completed', () => {
 eventEmitter.on('contacts:completed', () => {
 	const successElement = cloneTemplate('#success');
 	const successContent = new SuccessOrderModalView(
-		successElement,
-		eventEmitter
+		successElement
 	);
 	modalView.render(successContent);
 });
