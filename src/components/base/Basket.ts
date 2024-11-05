@@ -7,8 +7,8 @@ export class Basket {
   orderData: any;
   buyerId: string = '';
   statusOrder: string = 'pending';
-  public onChange: any;
-  public onSave: any;
+  public onChange: () => void;
+  public onSave: (saveData: any) => void;
 
   constructor() {
   }

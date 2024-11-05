@@ -38,7 +38,6 @@ export async function fetchItems(): Promise<IItem[]> {
 export async function submit(data: any): Promise<string> {
 	try {
 		const response = await api.post('/order/', data);
-		console.log('>>>', response);
 		return (response as any).total;
 	} catch (error) {
 		console.error('Ошибка при сохранении заказа:', error);
@@ -69,11 +68,21 @@ eventEmitter.on('card-preview:open', (event: { data: IItem }) => {
 basketIcon.addEventListener('click', () => {
 	const basketElement = cloneTemplate('#basket');
 	const basketContent = new BasketModalView(
-		basketElement,
-		basket,
-		eventEmitter
+		basketElement
 	);
 	modalView.render(basketContent);
+    basketContent.items = basket.items;
+    basketContent.basketCounter = basket.total;
+    basketContent.onOrderSubmit = () =>
+		eventEmitter.emit('basket:completed');
+    basketContent.onRemoveItem = (itemId) => {
+        const item = basket.items.find((i) => i.id === itemId);
+        basket.removeItem(item);		
+        eventEmitter.emit('basket:changed');
+        basketContent.basketCounter = basket.total;
+        basketContent.items = basket.items;
+        basketContent.render();
+    }
 });
 
 eventEmitter.on('basket:completed', () => {

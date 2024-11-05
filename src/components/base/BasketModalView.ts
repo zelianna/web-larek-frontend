@@ -1,29 +1,20 @@
-import { Basket } from './Basket';
-import { EventEmitter } from './events';
 import { Component } from './Component';
-import { IBasket, IItem } from '../../types';
+import { IItem } from '../../types';
 
 import { cloneTemplate } from '../../utils/utils';
 
 export class BasketModalView extends Component {
-	private basket: Basket;
-	private eventEmitter: EventEmitter;
 	private submitButton: HTMLElement;
 	private totalElement: HTMLElement;
 	private basketItemsContainer: HTMLElement;
+	public onRemoveItem: (itemId: string) => void;
+	public onOrderSubmit: () => void;
 
 	constructor(
-		container: HTMLElement,
-		basket: Basket,
-		eventEmitter: EventEmitter
+		container: HTMLElement
 	) {
 		super(container);
-		this.basket = basket;
-		this.eventEmitter = eventEmitter;
-	}
 
-	render(): HTMLElement {
-		super.render();
 		this.basketItemsContainer = this.container.querySelector(
 			'.basket__list'
 		) as HTMLElement;
@@ -33,33 +24,42 @@ export class BasketModalView extends Component {
 		this.submitButton = this.container.querySelector(
 			'.button'
 		) as HTMLButtonElement;
-		this.updateBasketItems();
-		this.updateBasketCounter();
-		this.toggleSubmitButton();
-		this.addRemoveItemListeners();
-		this.submitButton.addEventListener('click', () => this.onOrderSubmit()); 
-		return this.container;
 	}
 
-	private onOrderSubmit(): void {
-		this.eventEmitter.emit('basket:completed');
+	set basketCounter(value: number) {
+		this.totalElement.textContent = `${value} синапсов`;
 	}
 
-	updateBasketCounter(): void {
-		this.totalElement.textContent = `${this.basket.getTotalPrice()} синапсов`;
-	}
+	set items(items: IItem[]) {
+		const hasPurchasableItems = items.some(
+			(item) => item.price && item.price > 0
+		);
 
-	updateBasketItems(): void {
-		 this.basketItemsContainer.innerHTML = '';
-		if (this.basket.items.length === 0) {
+		if (hasPurchasableItems) {
+			this.submitButton.removeAttribute('disabled');
+		} else {
+			this.submitButton.setAttribute('disabled', 'disabled');
+		}
+
+		this.basketItemsContainer.innerHTML = '';
+		if (items.length === 0) {
 			this.basketItemsContainer.innerHTML =
 				'<p>В корзине нет добавленных товаров.</p>';
 			return;
 		}
-		this.basket.items.forEach((item, index) => {
+		items.forEach((item, index) => {
 			const itemElement = this.renderBasketItem(item, index);
 			this.basketItemsContainer.appendChild(itemElement);
 		}); 
+		this.addRemoveItemListeners();
+		this.submitButton.addEventListener('click', () => {
+			this.onOrderSubmit();
+		});
+	}
+
+	render(): HTMLElement {
+		super.render();
+		return this.container;
 	}
 
 	private renderBasketItem(item: IItem, index: number) : HTMLElement  {
@@ -89,32 +89,8 @@ export class BasketModalView extends Component {
 			button.addEventListener('click', (event: Event) => {
 				const target = event.target as HTMLElement;
 				const itemId = target.dataset.id!;
-				const item = this.basket.items.find((i) => i.id === itemId);
-				this.removeItem(item);
+				this.onRemoveItem(itemId);
 			});
 		});
 	}
-
-	private removeItem(item: IItem): void {
-		this.basket.removeItem(item);
-		this.updateBasketItems();
-		this.updateBasketCounter();
-		this.toggleSubmitButton();
-		this.eventEmitter.emit('basket:changed');
-	}
-
-	// Метод для включения/выключения кнопки Оформить
-	private toggleSubmitButton(): void {
-		// Если в корзине только бесценный товар - кнопка покупки неактивна
-		// Пустая корзина - кнопка покупки неактивна
-		const hasPurchasableItems = this.basket.items.some(
-			(item) => item.price && item.price > 0
-		);
-
-		if (hasPurchasableItems) {
-			this.submitButton.removeAttribute('disabled'); // Кнопка активна, если есть товары с ненулевой ценой
-		} else {
-			this.submitButton.setAttribute('disabled', 'disabled');
-		}
-	} 
 }
