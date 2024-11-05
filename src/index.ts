@@ -14,6 +14,13 @@ import { Api, ApiListResponse } from './components/base/api';
 import { API_URL } from './utils/constants'; 
 
 const api = new Api(API_URL);
+const eventEmitter = new EventEmitter();
+const basket = new Basket(eventEmitter);
+const container = document.getElementById('modal-container') as HTMLElement;
+const modalView = new ModalView(container);
+const galleryElement = document.querySelector('.gallery') as HTMLElement;
+const basketIcon = document.querySelector('#basket-icon') as HTMLElement;
+const basketCounterElement = document.querySelector('.header__basket-counter') as HTMLElement;
 
 export async function fetchItems(): Promise<IItem[]> {
     try {
@@ -38,46 +45,18 @@ export async function submit(data: any): Promise<string> {
 }
 
 
-const eventEmitter = new EventEmitter();
-const basket = new Basket(eventEmitter);
-let modalView: ModalView;
+// Инициализация страницы
+const mainPageView = new MainPageView(galleryElement, eventEmitter, basket);
 
-// Загрузка товаров на главной странице
-document.addEventListener('DOMContentLoaded', async () => {
-    const container = document.getElementById('modal-container') as HTMLElement;
-    modalView = new ModalView(container);
-    const galleryElement = document.querySelector('.gallery') as HTMLElement;
-    
-    
-    /* 
-    const contactsModalView = new ContactsModalView(container, contactsTemplate, eventEmitter);  
-    const successOrderModalView = new SuccessOrderModalView(container, successTemplate, eventEmitter); 
-    // Открытие корзины
-    const basketIcon = document.querySelector('#basket-icon') as HTMLElement;
-    
-    eventEmitter.on('basket:completed', () => {
-        paymentModalView.render();
-    });
-    eventEmitter.on('payment:completed', () => {
-        contactsModalView.render();
-    });
-    eventEmitter.on('basket:saved', (event: { total: number }) => {
-        successOrderModalView.render();
-        successOrderModalView.updateTotal(event.total);
-    });
-    */
-    // Рендер товаров на главной странице
+fetchItems().then(items => {
     if (galleryElement) {
-        const mainPageView = new MainPageView(galleryElement, eventEmitter, basket);
-        const items = await fetchItems();
-        //console.log(items);
         mainPageView.renderItems(items);
     }
+});
 
-    
-    // Обновление счётчика при изменении корзины
+// Обработчики событий для корзины и других модальных окон
+
     eventEmitter.on('basket:changed', () => {
-        const basketCounterElement = document.querySelector('.header__basket-counter') as HTMLElement;
         basketCounterElement.textContent = basket.items.length.toString();
     });
 
@@ -92,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         modalView.render(itemContent);
     });
     
-    const basketIcon = document.querySelector('#basket-icon') as HTMLElement;
+    
     basketIcon.addEventListener('click', () => {
         const basketElement = cloneTemplate('#basket');
         const basketContent = new BasketModalView(
@@ -128,7 +107,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             eventEmitter
         );
         modalView.render(successContent);
-    })
-}); 
+    });
+
+
+
+
+
+
 
 
