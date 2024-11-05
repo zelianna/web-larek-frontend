@@ -46,11 +46,11 @@ export async function submit(data: any): Promise<string> {
 }
 
 // Инициализация страницы
-const mainPageView = new MainPageView(galleryElement, eventEmitter, basket);
+const mainPageView = new MainPageView(galleryElement);
 
 fetchItems().then((items) => {
 	if (galleryElement) {
-		mainPageView.renderItems(items);
+		mainPageView.items = items;
 	}
 });
 
@@ -59,11 +59,13 @@ eventEmitter.on('basket:changed', () => {
 	basketCounterElement.textContent = basket.items.length.toString();
 });
 
-eventEmitter.on('card-preview:open', (event: { data: IItem }) => {
+mainPageView.onItemClicked = (item: IItem) => {
 	const cardElement = cloneTemplate('#card-preview');
-	const itemContent = new ItemModalView(cardElement, event.data, eventEmitter);
+	const itemContent = new ItemModalView(cardElement, item);
+    itemContent.onItemAdded = (item) => basket.addItem(item);
+    itemContent.isInBasket = basket.items.some(i => i.id === item.id)
 	modalView.render(itemContent);
-});
+};
 
 basketIcon.addEventListener('click', () => {
 	const basketElement = cloneTemplate('#basket');
@@ -87,30 +89,44 @@ basketIcon.addEventListener('click', () => {
 
 eventEmitter.on('basket:completed', () => {
 	const paymentElement = cloneTemplate('#order');
-	const paymentContent = new PaymentModalView(paymentElement, eventEmitter);
+	const paymentContent = new PaymentModalView(paymentElement);
 	modalView.render(paymentContent);
+    paymentContent.onPaymentChanged = (address, payment) => {
+        basket.populateOrderData({ address, payment });
+        if (!basket.isFirstStepValid) {
+            paymentContent.error = 'Необходимо заполнить все поля';
+			return;
+        }
+        paymentContent.error = null;
+    }
+    paymentContent.onPaymentSubmit = () => {
+        const contactsElement = cloneTemplate('#contacts');
+        const contactsContent = new ContactsModalView(contactsElement);
+        modalView.render(contactsContent);
+        contactsContent.onContactsChanged = (email: string, phone: string) => {
+            basket.populateOrderData({ email, phone });
+            if (!basket.isValid) {
+                contactsContent.error = 'Необходимо заполнить все поля';
+                return;
+            }
+            contactsContent.error = null;
+        };
+        contactsContent.onContactsCompleted = () => {
+            basket.requestSave();
+            const successElement = cloneTemplate('#success');
+            const successContent = new SuccessOrderModalView(
+                successElement
+            );
+            modalView.render(successContent);
+        };
+    };
 });
 
-eventEmitter.on('payment:completed', () => {
-	const contactsElement = cloneTemplate('#contacts');
-	const contactsContent = new ContactsModalView(contactsElement, eventEmitter);
-	modalView.render(contactsContent);
-});
 
-eventEmitter.on('contacts:completed', () => {
-	const successElement = cloneTemplate('#success');
-	const successContent = new SuccessOrderModalView(
-		successElement
-	);
-	modalView.render(successContent);
-});
 
 eventEmitter.on('basket:itemAdded', (e: {item: IItem}) =>  basket.addItem(e.item));
 eventEmitter.on('basket:itemRemoved', (e: {item: IItem}) =>  basket.removeItem(e.item));
-eventEmitter.on('contacts:completed', (e: {email: string, phone: string}) => {
-    basket.populateOrderData(e);
-    basket.requestSave();
-});
+
 eventEmitter.on('payment:completed', (e: {payment: string, address: string}) =>
     basket.populateOrderData(e)
 );

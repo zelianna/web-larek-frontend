@@ -1,19 +1,12 @@
-import { EventEmitter } from './events';
 import { Component } from './Component';
+
 export class PaymentModalView extends Component {
-	private eventEmitter: EventEmitter;
-	private selectedPaymentMethod: string | null = null;
+	private payment: string | null;
 	private addressInput: HTMLInputElement | null = null;
 	private submitButton: HTMLButtonElement | null = null;
 	private paymentButtons: NodeListOf<HTMLButtonElement> | null = null;
-
-	constructor(
-		container: HTMLElement,
-		eventEmitter: EventEmitter
-	) {
-		super(container);
-		this.eventEmitter = eventEmitter;
-	}
+	public onPaymentChanged: (shipping: string, payment: string) => void = () => {};
+	public onPaymentSubmit: () => void;
 
 	render(): HTMLElement {
 		this.paymentButtons = this.container.querySelectorAll(
@@ -32,57 +25,38 @@ export class PaymentModalView extends Component {
 				this.onPaymentMethodSelect(event)
 			);
 		});
-		this.addressInput.addEventListener('input', () => this.validateForm());
+		this.addressInput.addEventListener('input', () => {
+			const address = this.addressInput?.value;
+			this.onPaymentChanged(this.payment, address);
+		});
 
-		// Начальная валидация (кнопка будет отключена)
-		this.validateForm();
 		this.submitButton.addEventListener(
 			'click',
-			this.onPaymentSubmit.bind(this)
+			() => this.onPaymentSubmit()
 		);
 		return this.container;
 	}
 	private onPaymentMethodSelect(event: Event): void {
 		const button = event.target as HTMLButtonElement;
 
-		// Сначала убираем класс .button_alt-active у всех кнопок
 		this.paymentButtons.forEach((btn) => {
 			btn.classList.remove('button_alt-active');
 		});
 
-		// Добавляем класс .button_alt-active к выбранной кнопке
 		button.classList.add('button_alt-active');
-
-		this.selectedPaymentMethod = button.name;
-		this.validateForm();
+		this.payment = button.name;
+		const address = this.addressInput?.value;
+		this.onPaymentChanged(this.payment, address);
 	}
 
-	private validateForm(): void {
-		const isAddressValid = this.addressInput?.value.trim().length > 0; // Адрес не пустой
-		const isPaymentMethodSelected = this.selectedPaymentMethod !== null; // Выбран способ оплаты
-
-		if (isAddressValid && isPaymentMethodSelected) {
-			this.submitButton?.removeAttribute('disabled');
-		} else {
+	set error(message: string) {
+		const errorElement = this.container.querySelector('.form__errors');
+		if (message) {
+			errorElement.innerHTML = `<div class="error">${message}</div>`;
 			this.submitButton?.setAttribute('disabled', 'true');
-		}
-	}
-
-	onPaymentSubmit(event: Event): void {
-		event.preventDefault();
-		const shippingAddress = this.addressInput?.value.trim();
-		const paymentMethod = this.selectedPaymentMethod;
-		if (!paymentMethod || !shippingAddress) {
-			this.showError('Необходимо заполнить все поля');
 			return;
 		}
-		this.eventEmitter.emit('payment:completed', {
-			payment: paymentMethod,
-			address: shippingAddress,
-		});
-	}
-
-	showError(message: string): void {
-		this.container.innerHTML = `<div class="error">${message}</div>`;
+		errorElement.innerHTML = "";
+		this.submitButton?.removeAttribute('disabled');
 	}
 }

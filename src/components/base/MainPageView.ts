@@ -1,42 +1,27 @@
 import { IItem } from '../../types/index';
 import { CDN_URL } from '../../utils/constants';
-import { ItemModalView } from './ItemModalView';
-import { EventEmitter } from '../../components/base/events';
-import { Basket } from './Basket';
 
 export class MainPageView {
 	private galleryElement: HTMLElement;
-	private itemModalView: ItemModalView;
-	private eventEmitter: EventEmitter;
 	private basketCounterElement: HTMLElement;
-	private basket: Basket;
+	public onItemClicked: (item: IItem) => void;
 
 	constructor(
-		galleryElement: HTMLElement,
-		eventEmitter: EventEmitter,
-		basket: Basket
+		galleryElement: HTMLElement
 	) {
 		this.galleryElement = galleryElement;
-		this.eventEmitter = eventEmitter;
-		this.basket = basket;
 
 		// Cчётчик корзины
 		this.basketCounterElement = document.querySelector(
 			'.header__basket-counter'
 		) as HTMLElement;
-		this.eventEmitter.on('basket:changed', this.updateBasketCounter.bind(this));
 	}
 
-	updateBasketCounter(): void {
-		const itemCount = this.getBasketItemCount();
-		this.basketCounterElement.textContent = itemCount.toString();
+	set counter(counter: number){
+		this.basketCounterElement.textContent = counter.toString();
 	}
 
-	private getBasketItemCount(): number {
-		return this.basket?.items.length ?? 0;
-	}
-
-	renderItems(items: IItem[]): void {
+	set items(items: IItem[]) {
 		this.galleryElement.innerHTML = '';
 		const template = document.getElementById(
 			'card-catalog'
@@ -77,13 +62,8 @@ export class MainPageView {
 					cl = 'card__category_other';
 			}
 			cardCategory.classList.add(cl);
-
-			// Открытие модального окна при клике на карточку товара
-			card.addEventListener('click', () => {
-				this.eventEmitter.emit('card-preview:open', { data: item });
-			});
-			// Добавляем карточку в галерею
 			this.galleryElement.appendChild(clone);
+			card.addEventListener('click', () => this.onItemClicked(item));
 		});
 	}
 

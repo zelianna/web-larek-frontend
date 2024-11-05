@@ -1,25 +1,21 @@
 import { CDN_URL } from '../../utils/constants';
 import { IItem } from '../../types';
-import { EventEmitter } from './events';
 import { Component } from './Component';
 
 export class ItemModalView extends Component {
-	private eventEmitter: EventEmitter;
-	private isItemInBasket: boolean = false;
 
 	private titleElement: HTMLElement;
 	private priceElement: HTMLElement;
 	private descriptionElement: HTMLElement;
 	private imageElement: HTMLImageElement;
 	private addButton: HTMLButtonElement;
+	public onItemAdded: (item: IItem) => void;
 
 	constructor(
 		container: HTMLElement,
 		item: IItem,
-		eventEmitter: EventEmitter,
 	) {
 		super(container);
-		this.eventEmitter = eventEmitter;
 		this.titleElement = container.querySelector(
 			'.card__title'
 		) as HTMLElement;
@@ -37,8 +33,7 @@ export class ItemModalView extends Component {
 		) as HTMLButtonElement;
 		this.item = item;
 		this.addButton.addEventListener('click', () => {
-			this.eventEmitter.emit('basket:itemAdded', { item });
-			this.isItemInBasket = true;
+			this.onItemAdded(item);
 			this.addButton.disabled = true;
 		});
 	}
@@ -49,11 +44,10 @@ export class ItemModalView extends Component {
 			item.price !== null ? `${item.price} синапсов` : 'Бесценно';
 		this.descriptionElement.textContent = item.description;
 		this.imageElement.src = CDN_URL + item.image;
-		/*this.isItemInBasket = this.basket.items.some(
-			(basketItem) => basketItem.id === item.id
-		); 
-		this.addButton.disabled = this.isItemInBasket; // Делаем кнопку неактивной, если товар уже в корзине
-		*/
+	}
+
+	set isInBasket(value: boolean) {
+		this.addButton.disabled = value;
 	}
 
 

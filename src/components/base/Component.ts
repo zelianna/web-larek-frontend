@@ -1,6 +1,6 @@
 export abstract class Component {
 
-    protected constructor(protected readonly container: HTMLElement) {
+    constructor(protected readonly container: HTMLElement) {
     }
 
     toggleClass(element: HTMLElement, className: string, force?: boolean) {

@@ -7,6 +7,8 @@ export class Basket {
   orderData: any;
   buyerId: string = '';
   statusOrder: string = 'pending';
+  public isValid: boolean = false;
+  public isFirstStepValid: boolean = false;
   public onChange: () => void;
   public onSave: (saveData: any) => void;
 
@@ -15,6 +17,13 @@ export class Basket {
 
   populateOrderData(data: IOrderData) {
     this.orderData = {...this.orderData, ...data};
+    const isAddressValid = this.orderData.address?.length > 0;
+		const isPaymentMethodSelected = !!this.orderData.payment;
+    const isEmailValid = this.orderData.email?.length > 0;
+		const isPhoneValid = this.orderData.phone?.length > 0;
+
+    this.isFirstStepValid = isAddressValid && isPaymentMethodSelected;
+    this.isValid = isEmailValid && isPhoneValid && isAddressValid && isPaymentMethodSelected;
   }
 
   addItem(item: IItem): void {

@@ -1,19 +1,11 @@
-import { EventEmitter } from './events';
 import { Component } from './Component';
  
 export class ContactsModalView extends Component {
-	private eventEmitter: EventEmitter;
 	private emailInput: HTMLInputElement | null = null;
 	private phoneInput: HTMLButtonElement | null = null;
 	private submitButton: HTMLButtonElement | null = null;
-
-	constructor(
-		container: HTMLElement,
-		eventEmitter: EventEmitter
-	) {
-		super(container);
-		this.eventEmitter = eventEmitter;
-	}
+	public onContactsChanged: (email: string, phone: string) => void = () => {};
+	public onContactsCompleted: () => void;
 
 	render(): HTMLElement {
 
@@ -24,11 +16,10 @@ export class ContactsModalView extends Component {
 		this.phoneInput = this.container.querySelector(
 			'input[name="phone"]'
 		) as HTMLInputElement;
-		this.emailInput.addEventListener('input', () => this.validateForm());
-		this.phoneInput.addEventListener('input', () => this.validateForm());
+		this.emailInput.addEventListener('input', () => this.triggerChanged());
+		this.phoneInput.addEventListener('input', () => this.triggerChanged());
 
-		// Начальная валидация (кнопка будет отключена)
-		this.validateForm();
+		this.triggerChanged()
 		this.submitButton.addEventListener(
 			'click',
 			this.onSubmitContactForm.bind(this)
@@ -36,33 +27,26 @@ export class ContactsModalView extends Component {
 		return this.container;
 	}
 
-	private validateForm(): void {
-		const isEmailValid = this.emailInput?.value.trim().length > 0;
-		const isPhoneValid = this.phoneInput?.value.trim().length > 0;
+	private triggerChanged() {
+		const phone = this.phoneInput.value.trim();
+		const email = this.emailInput.value.trim();
+		this.onContactsChanged(email, phone);
+	}
 
-		if (isEmailValid && isPhoneValid) {
+	set error(message: string | null) {
+		const errorElement = this.container.querySelector('.form__errors');
+		if (!message) {
+			errorElement.innerHTML = '';
 			this.submitButton?.removeAttribute('disabled');
-		} else {
-			this.submitButton?.setAttribute('disabled', 'true');
+			return;
 		}
+		this.submitButton?.setAttribute('disabled', 'true');
+		errorElement.innerHTML = message;
 	}
 
 	async onSubmitContactForm(event: Event): Promise<void> {
 		event.preventDefault();
 		event.stopPropagation();
-		const email = this.emailInput?.value.trim();
-		const phone = this.phoneInput?.value.trim();
-		if (!email || !phone) {
-			this.showError('Необходимо заполнить все поля');
-			return;
-		}
-		try {
-			this.eventEmitter.emit('contacts:completed', { email, phone }); // Переход к SuccessModalView
-		} catch (error) {
-			this.showError(`Ошибка отправки заказа: ${error}`);
-		}
-	}
-	showError(message: string): void {
-		this.container.innerHTML = `<div class="error">${message}</div>`;
+		this.onContactsCompleted();
 	}
 }
