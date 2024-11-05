@@ -15,7 +15,7 @@ import { API_URL } from './utils/constants';
 
 const api = new Api(API_URL);
 const eventEmitter = new EventEmitter();
-const basket = new Basket(eventEmitter);
+const basket = new Basket();
 const container = document.getElementById('modal-container') as HTMLElement;
 const modalView = new ModalView(container);
 const galleryElement = document.querySelector('.gallery') as HTMLElement;
@@ -23,6 +23,7 @@ const basketIcon = document.querySelector('#basket-icon') as HTMLElement;
 const basketCounterElement = document.querySelector(
 	'.header__basket-counter'
 ) as HTMLElement;
+
 
 export async function fetchItems(): Promise<IItem[]> {
 	try {
@@ -96,13 +97,25 @@ eventEmitter.on('contacts:completed', () => {
 	modalView.render(successContent);
 });
 
-eventEmitter.on('basket:saveRequest', async (data: any) => {
-	try {
-		const total = await submit(data);
+eventEmitter.on('basket:itemAdded', (e: {item: IItem}) =>  basket.addItem(e.item));
+eventEmitter.on('basket:itemRemoved', (e: {item: IItem}) =>  basket.removeItem(e.item));
+eventEmitter.on('contacts:completed', (e: {email: string, phone: string}) => {
+    basket.populateOrderData(e);
+    basket.requestSave();
+});
+eventEmitter.on('payment:completed', (e: {payment: string, address: string}) =>
+    basket.populateOrderData(e)
+);
+
+basket.onChange = () => eventEmitter.emit('basket:changed');
+basket.onSave = async (saveData: any) => {
+    try {
+		const total = await submit(saveData);
+
+        basket.clear();
 		eventEmitter.emit('basket:saved', { total });
-		basket.clear();
 		eventEmitter.emit('basket:changed');
 	} catch (error) {
 		console.error('Ошибка при сохранении корзины:', error);
 	}
-});
+}

@@ -1,25 +1,16 @@
 
 import { IItem, IOrderData } from '../../types/index';
-import { EventEmitter } from './events';
-import { submit } from '../../index';
 
 export class Basket {
   items: IItem[] = [];
   total: number = 0;
   orderData: any;
   buyerId: string = '';
-  statusOrder: string = 'pending'; 
-  private eventEmitter: EventEmitter;
+  statusOrder: string = 'pending';
+  public onChange: any;
+  public onSave: any;
 
-  constructor(eventEmitter: EventEmitter) {
-    this.eventEmitter = eventEmitter;
-    this.eventEmitter.on('basket:itemAdded', (e: {item: IItem}) =>  this.addItem(e.item));
-    this.eventEmitter.on('basket:itemRemoved', (e: {item: IItem}) =>  this.removeItem(e.item));
-    this.eventEmitter.on('contacts:completed', (e: {email: string, phone: string}) => {
-      this.populateOrderData(e);
-      this.requestSave();
-    });
-    this.eventEmitter.on('payment:completed', (e: {payment: string, address: string}) => this.populateOrderData(e));
+  constructor() {
   }
 
   populateOrderData(data: IOrderData) {
@@ -29,19 +20,20 @@ export class Basket {
   addItem(item: IItem): void {
     this.items.push(item);
     this.updateTotal();
-    this.eventEmitter.emit('basket:changed'); 
+    this.onChange();
   }
 
   removeItem(item: IItem): void {
     const itemId = item.id;
     this.items = this.items.filter(item => item.id !== itemId);
     this.updateTotal();
-    this.eventEmitter.emit('basket:changed');
+    this.onChange();
   }
 
   clear(): void {
     this.items = [];
-    this.total = 0;
+    this.updateTotal();
+    this.onChange();
   }
 
   getTotalPrice(): number {
@@ -60,7 +52,7 @@ export class Basket {
       items,
       total: this.total,
     };
-    this.eventEmitter.emit('basket:saveRequest', saveData);
+    this.onSave(saveData);
   }
 
 }
