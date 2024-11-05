@@ -17,7 +17,7 @@ export class Basket {
     this.eventEmitter.on('basket:itemRemoved', (e: {item: IItem}) =>  this.removeItem(e.item));
     this.eventEmitter.on('contacts:completed', (e: {email: string, phone: string}) => {
       this.populateOrderData(e);
-      this.save();
+      this.requestSave();
     });
     this.eventEmitter.on('payment:completed', (e: {payment: string, address: string}) => this.populateOrderData(e));
   }
@@ -53,18 +53,14 @@ export class Basket {
     this.total = this.items.reduce((sum, item) => sum + item.price, 0);
   }
 
-  async save(): Promise<void> {
+  requestSave(): void {
     const items = this.items.filter(i => i.price > 0).map(i => i.id);
-    try {
-      const total = await submit({
-        ...this.orderData,
-        ...{items, total: this.total}
-      });
-      this.eventEmitter.emit('basket:saved', {total});
-      this.clear(); 
-    this.eventEmitter.emit('basket:changed');
-    } catch(e) {
-      console.log('>>>> OH MY GOD!', e);
-    }
+    const saveData = {
+      ...this.orderData,
+      items,
+      total: this.total,
+    };
+    this.eventEmitter.emit('basket:saveRequest', saveData);
   }
+
 }
