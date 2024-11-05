@@ -5,11 +5,10 @@ import { ItemModalView } from './components/base/ItemModalView';
 import { BasketModalView } from './components/base/BasketModalView';
 import { EventEmitter } from './components/base/events';
 import { Basket } from './components/base/Basket';
-/* import { BasketModalView } from './components/base/BasketModalView';
 import { PaymentModalView } from './components/base/PaymentModalView';
 import { ContactsModalView } from './components/base/ContactsModalView';
 import { SuccessOrderModalView } from './components/base/SuccessOrderModalView';
- */import { IItem } from './types';
+import { IItem } from './types';
 import { cloneTemplate } from './utils/utils';
 import { ModalView } from './components/base/ModalView';
 
@@ -22,12 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('modal-container') as HTMLElement;
     modalView = new ModalView(container);
     const galleryElement = document.querySelector('.gallery') as HTMLElement;
-    const basketElement = document.querySelector('.basket') as HTMLElement;
-    const orderTemplate = cloneTemplate('#order');
-    const contactsTemplate = cloneTemplate('#contacts');
-    const successTemplate = cloneTemplate('#success');
-    /* const basketModalView = new BasketModalView(container, basketElement, basket, eventEmitter);
-    const paymentModalView = new PaymentModalView(container, orderTemplate, eventEmitter);  
+    
+    
+    /* 
     const contactsModalView = new ContactsModalView(container, contactsTemplate, eventEmitter);  
     const successOrderModalView = new SuccessOrderModalView(container, successTemplate, eventEmitter); 
     // Открытие корзины
@@ -80,6 +76,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
         modalView.render(basketContent);
     });
+
+    eventEmitter.on('basket:completed', () => {
+        const paymentElement = cloneTemplate('#order');
+        const paymentContent = new PaymentModalView(
+            paymentElement,
+            eventEmitter
+        );
+        modalView.render(paymentContent);
+    });
+
+    eventEmitter.on('payment:completed', () => {
+        const contactsElement = cloneTemplate('#contacts');
+        const contactsContent = new ContactsModalView(
+            contactsElement,
+            eventEmitter
+        );
+        modalView.render(contactsContent);
+    });
+
+    eventEmitter.on('contacts:completed', () => {
+        const successElement = cloneTemplate('#success');
+        const successContent = new SuccessOrderModalView(
+            successElement,
+            eventEmitter
+        );
+        modalView.render(successContent);
+    })
 }); 
 
 

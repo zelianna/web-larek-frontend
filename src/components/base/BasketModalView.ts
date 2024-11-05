@@ -1,7 +1,9 @@
 import { Basket } from './Basket';
 import { EventEmitter } from './events';
 import { Component } from './Component';
-import { IItem } from '../../types';
+import { IBasket, IItem } from '../../types';
+
+import { cloneTemplate } from '../../utils/utils';
 
 export class BasketModalView extends Component {
 	private basket: Basket;
@@ -35,13 +37,11 @@ export class BasketModalView extends Component {
 		this.updateBasketCounter();
 		this.toggleSubmitButton();
 		this.addRemoveItemListeners();
-		//this.submitButton.addEventListener('click', this.container.bind(this)); 
+		this.submitButton.addEventListener('click', () => this.onOrderSubmit()); 
 		return this.container;
 	}
 
-	// Обработчик нажатия на кнопку Оформить
 	private onOrderSubmit(): void {
-		//this.setHidden(this.container);
 		this.eventEmitter.emit('basket:completed');
 	}
 
@@ -50,7 +50,7 @@ export class BasketModalView extends Component {
 	}
 
 	updateBasketItems(): void {
-		/* this.basketItemsContainer.innerHTML = '';
+		 this.basketItemsContainer.innerHTML = '';
 		if (this.basket.items.length === 0) {
 			this.basketItemsContainer.innerHTML =
 				'<p>В корзине нет добавленных товаров.</p>';
@@ -59,11 +59,11 @@ export class BasketModalView extends Component {
 		this.basket.items.forEach((item, index) => {
 			const itemElement = this.renderBasketItem(item, index);
 			this.basketItemsContainer.appendChild(itemElement);
-		}); */
+		}); 
 	}
 
-	private renderBasketItem(item: IItem, index: number)/* : HTMLElement */ {
-		/* const itemElement = cloneTemplate('#card-basket');
+	private renderBasketItem(item: IItem, index: number) : HTMLElement  {
+		const itemElement = cloneTemplate('#card-basket');
 		const itemIndex = itemElement.querySelector(
 			'.basket__item-index'
 		) as HTMLElement;
@@ -78,7 +78,7 @@ export class BasketModalView extends Component {
 		itemPrice.textContent = `${item.price ?? 0} синапсов`;
 		removeButton.dataset.id = item.id;
 
-		return itemElement; */
+		return itemElement; 
 	}
 
 	private addRemoveItemListeners(): void {
@@ -97,6 +97,9 @@ export class BasketModalView extends Component {
 
 	private removeItem(item: IItem): void {
 		this.basket.removeItem(item);
+		this.updateBasketItems();
+		this.updateBasketCounter();
+		this.toggleSubmitButton();
 		this.eventEmitter.emit('basket:changed');
 	}
 

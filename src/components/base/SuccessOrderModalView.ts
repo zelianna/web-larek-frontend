@@ -1,17 +1,12 @@
 import { Component } from './Component';
-import { Basket } from './Basket'; 
 import { EventEmitter } from './events';
-/* 
+
 export class SuccessOrderModalView extends Component {
   private eventEmitter: EventEmitter;
 
-  constructor(container: HTMLElement, successElement: HTMLElement, eventEmitter: EventEmitter) {
-    super(container, successElement);
+  constructor(container: HTMLElement, eventEmitter: EventEmitter) {
+    super(container);
     this.eventEmitter = eventEmitter;
-  }
-
-  render() {
-    this.openModal();
   }
   
   updateTotal(total: number): void {
@@ -19,5 +14,3 @@ export class SuccessOrderModalView extends Component {
     descriptionElement.textContent = `Списано ${total} синапсов`;
   }
 }
-  
- */

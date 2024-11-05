@@ -1,6 +1,6 @@
-import { ModalView } from './ModalView';
 import { EventEmitter } from './events';
-/* export class PaymentModalView extends ModalView {
+import { Component } from './Component';
+export class PaymentModalView extends Component {
 	private eventEmitter: EventEmitter;
 	private selectedPaymentMethod: string | null = null;
 	private addressInput: HTMLInputElement | null = null;
@@ -9,15 +9,13 @@ import { EventEmitter } from './events';
 
 	constructor(
 		container: HTMLElement,
-		orderElement: HTMLElement,
 		eventEmitter: EventEmitter
 	) {
-		super(container, orderElement);
+		super(container);
 		this.eventEmitter = eventEmitter;
 	}
 
-	render(): void {
-		this.openModal();
+	render(): HTMLElement {
 		this.paymentButtons = this.container.querySelectorAll(
 			'.order__buttons button'
 		);
@@ -42,6 +40,7 @@ import { EventEmitter } from './events';
 			'click',
 			this.onPaymentSubmit.bind(this)
 		);
+		return this.container;
 	}
 	private onPaymentMethodSelect(event: Event): void {
 		const button = event.target as HTMLButtonElement;
@@ -77,7 +76,6 @@ import { EventEmitter } from './events';
 			this.showError('Необходимо заполнить все поля');
 			return;
 		}
-		this.closeModal();
 		this.eventEmitter.emit('payment:completed', {
 			payment: paymentMethod,
 			address: shippingAddress,
@@ -87,4 +85,4 @@ import { EventEmitter } from './events';
 	showError(message: string): void {
 		this.container.innerHTML = `<div class="error">${message}</div>`;
 	}
-} */
+}

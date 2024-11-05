@@ -1,7 +1,7 @@
-import { ModalView } from './ModalView';
 import { EventEmitter } from './events';
-/* 
-export class ContactsModalView extends ModalForm {
+import { Component } from './Component';
+ 
+export class ContactsModalView extends Component {
 	private eventEmitter: EventEmitter;
 	private emailInput: HTMLInputElement | null = null;
 	private phoneInput: HTMLButtonElement | null = null;
@@ -9,15 +9,13 @@ export class ContactsModalView extends ModalForm {
 
 	constructor(
 		container: HTMLElement,
-		contactsElement: HTMLElement,
 		eventEmitter: EventEmitter
 	) {
-		super(container, contactsElement);
+		super(container);
 		this.eventEmitter = eventEmitter;
 	}
 
-	render(): void {
-		this.openModal();
+	render(): HTMLElement {
 
 		this.submitButton = this.container.querySelector('.button');
 		this.emailInput = this.container.querySelector(
@@ -35,6 +33,7 @@ export class ContactsModalView extends ModalForm {
 			'click',
 			this.onSubmitContactForm.bind(this)
 		);
+		return this.container;
 	}
 
 	private validateForm(): void {
@@ -57,11 +56,8 @@ export class ContactsModalView extends ModalForm {
 			this.showError('Необходимо заполнить все поля');
 			return;
 		}
-		//this.closeModal();
-		//this.eventEmitter.emit('contacts:completed', { email, phone });
 		try {
 			this.eventEmitter.emit('contacts:completed', { email, phone }); // Переход к SuccessModalView
-			this.closeModal();
 		} catch (error) {
 			this.showError(`Ошибка отправки заказа: ${error}`);
 		}
@@ -70,4 +66,3 @@ export class ContactsModalView extends ModalForm {
 		this.container.innerHTML = `<div class="error">${message}</div>`;
 	}
 }
- */

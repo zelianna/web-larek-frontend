@@ -27,6 +27,7 @@ export class ModalView {
     render(view: Component): void {
         this.container.style.display = 'flex';
         const bodyContainer = this.container.querySelector('.modal__content');
+        bodyContainer.innerHTML = "";
         bodyContainer.classList.add('modal_active');
         bodyContainer.classList.add('page_wrapper_locked');
         bodyContainer.appendChild(view.render({}));

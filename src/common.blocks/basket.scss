@@ -5,6 +5,7 @@
   @include mixins.flex(column);
   gap: 2rem;
   height: 100%;
+  flex-grow: 1;
 
   &__list {
     padding: 0;
