@@ -111,11 +111,7 @@ eventEmitter.on('basket:completed', () => {
         };
         contactsContent.onContactsCompleted = () => {
             basket.requestSave();
-            const successElement = cloneTemplate('#success');
-            const successContent = new SuccessOrderModalView(
-                successElement
-            );
-            modalView.render(successContent);
+            
         };
     };
 });
@@ -135,8 +131,13 @@ basket.onSave = async (saveData: any) => {
 		const total = await submit(saveData);
 
         basket.clear();
-		eventEmitter.emit('basket:saved', { total });
 		eventEmitter.emit('basket:changed');
+        const successElement = cloneTemplate('#success');
+        const successContent = new SuccessOrderModalView(
+            successElement
+        );
+        successContent.total = total;
+        modalView.render(successContent);
 	} catch (error) {
 		console.error('Ошибка при сохранении корзины:', error);
 	}
