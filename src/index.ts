@@ -31,7 +31,6 @@ export async function fetchItems(): Promise<IItem[]> {
 		return (response as ApiListResponse<IItem>).items; // Приведение ответа к типу ApiListResponse<IItem>
 	} catch (error) {
 		console.error('Ошибка при получении товаров:', error);
-		throw error;
 	}
 }
 
@@ -41,7 +40,6 @@ export async function submit(data: any): Promise<string> {
 		return (response as any).total;
 	} catch (error) {
 		console.error('Ошибка при сохранении заказа:', error);
-		throw error;
 	}
 }
 

@@ -4,7 +4,7 @@ import { IItem, IOrderData } from '../../types/index';
 export class Basket {
   items: IItem[] = [];
   total: number = 0;
-  orderData: any;
+  orderData: IOrderData | null = null;  
   buyerId: string = '';
   statusOrder: string = 'pending';
   public isValid: boolean = false;
@@ -55,6 +55,11 @@ export class Basket {
   }
 
   requestSave(): void {
+    if (!this.orderData) {
+      console.error('Order data is incomplete');
+      return;
+    }
+
     const items = this.items.filter(i => i.price > 0).map(i => i.id);
     const saveData = {
       ...this.orderData,
