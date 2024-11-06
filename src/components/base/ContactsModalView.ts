@@ -15,7 +15,11 @@ export class ContactsModalView extends Component {
 
 		this.emailInput.addEventListener('input', () => this.triggerChanged());
 		this.phoneInput.addEventListener('input', () => this.triggerChanged());
-		this.submitButton.addEventListener('click', this.onSubmitContactForm.bind(this));
+		this.submitButton.addEventListener('click', (event) => {
+			event.preventDefault();
+			event.stopPropagation();
+			this.onContactsCompleted();
+		});
 	}
 
 	render(): HTMLElement {
@@ -40,9 +44,4 @@ export class ContactsModalView extends Component {
 		errorElement.innerHTML = message;
 	}
 
-	async onSubmitContactForm(event: Event): Promise<void> {
-		event.preventDefault();
-		event.stopPropagation();
-		this.onContactsCompleted();
-	}
 }

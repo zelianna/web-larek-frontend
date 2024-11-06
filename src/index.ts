@@ -12,6 +12,8 @@ import { cloneTemplate } from './utils/utils';
 import { ModalView } from './components/base/ModalView';
 import { Api, ApiListResponse } from './components/base/api';
 import { API_URL } from './utils/constants';
+import { BasketItemView } from './components/base/BasketItemView';
+import { ItemCardView } from './components/base/ItemCardView';
 
 const api = new Api(API_URL);
 const eventEmitter = new EventEmitter();
@@ -46,9 +48,24 @@ export async function submit(data: any): Promise<string> {
 // Инициализация страницы
 const mainPageView = new MainPageView(galleryElement);
 
+
 fetchItems().then((items) => {
 	if (galleryElement) {
-		mainPageView.items = items;
+        
+        const itemsViews = items.map(item => {
+            const template = cloneTemplate('#card-catalog');
+            const view = new ItemCardView(template)
+            view.item = item;
+            view.onItemClicked = () => {
+                const cardElement = cloneTemplate('#card-preview');
+                const itemContent = new ItemModalView(cardElement, item);
+                itemContent.onItemAdded = (item) => basket.addItem(item);
+                itemContent.isInBasket = basket.items.some(i => i.id === item.id)
+                modalView.render(itemContent);
+            }
+            return view.render();
+        });
+		mainPageView.itemsViews = itemsViews;
 	}
 });
 
@@ -57,32 +74,42 @@ eventEmitter.on('basket:changed', () => {
 	basketCounterElement.textContent = basket.items.length.toString();
 });
 
-mainPageView.onItemClicked = (item: IItem) => {
-	const cardElement = cloneTemplate('#card-preview');
-	const itemContent = new ItemModalView(cardElement, item);
-    itemContent.onItemAdded = (item) => basket.addItem(item);
-    itemContent.isInBasket = basket.items.some(i => i.id === item.id)
-	modalView.render(itemContent);
-};
-
 basketIcon.addEventListener('click', () => {
 	const basketElement = cloneTemplate('#basket');
 	const basketContent = new BasketModalView(
 		basketElement
 	);
 	modalView.render(basketContent);
-    basketContent.items = basket.items;
+
+    function renderItems() {
+        basketContent.hasPurchasableItems = basket.items.some(
+            (item) => item.price && item.price > 0
+        );
+        const itemsViews = basket.items.map((item, index) => {
+            const basketItemElement = cloneTemplate('#card-basket');
+            const view = new BasketItemView(basketItemElement);
+            view.id = item.id;
+            view.index = index;
+            view.price = item.price;
+            view.title = item.title;
+            view.onRemove = (itemId) => {
+                const item = basket.items.find((i) => i.id === itemId);
+                basket.removeItem(item);		
+                eventEmitter.emit('basket:changed');
+                basketContent.basketCounter = basket.total;
+                renderItems();
+            }
+            return view.render();
+        });
+        basketContent.itemsViews = itemsViews;
+    }
+    
+    renderItems();
     basketContent.basketCounter = basket.total;
+    
+
     basketContent.onOrderSubmit = () =>
 		eventEmitter.emit('basket:completed');
-    basketContent.onRemoveItem = (itemId) => {
-        const item = basket.items.find((i) => i.id === itemId);
-        basket.removeItem(item);		
-        eventEmitter.emit('basket:changed');
-        basketContent.basketCounter = basket.total;
-        basketContent.items = basket.items;
-        basketContent.render();
-    }
 });
 
 eventEmitter.on('basket:completed', () => {
