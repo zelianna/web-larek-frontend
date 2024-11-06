@@ -3,6 +3,8 @@ import { Component } from "./Component";
 export class ModalView {
     protected container: HTMLElement;
     protected isRendered: boolean;
+    protected wrapper: HTMLElement;
+    protected bodyContainer: HTMLElement;
 
     constructor(container: HTMLElement) {
         this.container = container;
@@ -17,20 +19,22 @@ export class ModalView {
             }
         });
         this.isRendered = false;
+        this.wrapper = document.querySelector('.page__wrapper');
+        this.bodyContainer = this.container.querySelector('.modal__content');
     }
 
     closeModal(): void {
         this.container.style.display = 'none';
         this.isRendered = false;
+        this.wrapper.classList.remove('page__wrapper_locked');
     }
 
     render(view: Component): void {
         this.container.style.display = 'flex';
-        const bodyContainer = this.container.querySelector('.modal__content');
-        bodyContainer.innerHTML = "";
-        bodyContainer.classList.add('modal_active');
-        //bodyContainer.classList.add('page__wrapper_locked');
-        bodyContainer.appendChild(view.render({}));
+        this.bodyContainer.innerHTML = "";
+        this.bodyContainer.classList.add('modal_active');
+        this.wrapper.classList.add('page__wrapper_locked');
+        this.bodyContainer.appendChild(view.render({}));
         this.isRendered = true;
     }
 }

@@ -24,14 +24,6 @@ export class MainPageView {
 		});
 	}
 
-	/* set locked(value: boolean) {
-        if (value) {
-            this.galleryElement.classList.add('page__wrapper_locked');
-        } else {
-            this.galleryElement.classList.remove('page__wrapper_locked');
-        }
-    } */
-
 	showError(message: string): void {
 		this.galleryElement.innerHTML = `<div class="error">${message}</div>`;
 	}
