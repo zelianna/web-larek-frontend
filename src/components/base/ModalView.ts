@@ -29,7 +29,7 @@ export class ModalView {
         const bodyContainer = this.container.querySelector('.modal__content');
         bodyContainer.innerHTML = "";
         bodyContainer.classList.add('modal_active');
-        bodyContainer.classList.add('page_wrapper_locked');
+        //bodyContainer.classList.add('page__wrapper_locked');
         bodyContainer.appendChild(view.render({}));
         this.isRendered = true;
     }

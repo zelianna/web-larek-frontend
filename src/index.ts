@@ -141,3 +141,17 @@ basket.onSave = async (saveData: any) => {
 		console.error('Ошибка при сохранении корзины:', error);
 	}
 }
+
+/* 
+//const page = galleryElement.querySelector('.page__wrapper') as HTMLDivElement;
+const page = document.querySelector('.page__wrapper') as HTMLElement;
+
+// Блокируем прокрутку страницы если открыта модалка
+eventEmitter.on('modal:open', () => {
+	page.locked = true;
+});
+
+// ... и разблокируем
+eventEmitter.on('modal:close', () => {
+	page.locked = false;
+});  */

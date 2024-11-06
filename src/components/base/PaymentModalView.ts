@@ -8,32 +8,24 @@ export class PaymentModalView extends Component {
 	public onPaymentChanged: (shipping: string, payment: string) => void = () => {};
 	public onPaymentSubmit: () => void;
 
-	render(): HTMLElement {
-		this.paymentButtons = this.container.querySelectorAll(
-			'.order__buttons button'
-		);
-
-		this.addressInput = this.container.querySelector(
-			'input[name="address"]'
-		) as HTMLInputElement;
-		this.submitButton = this.container.querySelector(
-			'.order__button'
-		) as HTMLButtonElement;
+	constructor(container: HTMLElement) {
+		super(container);
+		
+		this.paymentButtons = this.container.querySelectorAll('.order__buttons button');
+		this.addressInput = this.container.querySelector('input[name="address"]') as HTMLInputElement;
+		this.submitButton = this.container.querySelector('.order__button') as HTMLButtonElement;
 
 		this.paymentButtons.forEach((button) => {
-			button.addEventListener('click', (event) =>
-				this.onPaymentMethodSelect(event)
-			);
+			button.addEventListener('click', (event) => this.onPaymentMethodSelect(event));
 		});
 		this.addressInput.addEventListener('input', () => {
 			const address = this.addressInput?.value;
 			this.onPaymentChanged(this.payment, address);
 		});
+		this.submitButton.addEventListener('click', () => this.onPaymentSubmit());
+	}
 
-		this.submitButton.addEventListener(
-			'click',
-			() => this.onPaymentSubmit()
-		);
+	render(): HTMLElement {
 		return this.container;
 	}
 	private onPaymentMethodSelect(event: Event): void {

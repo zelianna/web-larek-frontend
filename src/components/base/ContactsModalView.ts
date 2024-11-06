@@ -7,23 +7,19 @@ export class ContactsModalView extends Component {
 	public onContactsChanged: (email: string, phone: string) => void = () => {};
 	public onContactsCompleted: () => void;
 
-	render(): HTMLElement {
+	constructor(container: HTMLElement) {
+		super(container);
+		this.submitButton = this.container.querySelector('.button') as HTMLButtonElement;
+		this.emailInput = this.container.querySelector('input[name="email"]') as HTMLInputElement;
+		this.phoneInput = this.container.querySelector('input[name="phone"]') as HTMLInputElement;
 
-		this.submitButton = this.container.querySelector('.button');
-		this.emailInput = this.container.querySelector(
-			'input[name="email"]'
-		) as HTMLInputElement;
-		this.phoneInput = this.container.querySelector(
-			'input[name="phone"]'
-		) as HTMLInputElement;
 		this.emailInput.addEventListener('input', () => this.triggerChanged());
 		this.phoneInput.addEventListener('input', () => this.triggerChanged());
+		this.submitButton.addEventListener('click', this.onSubmitContactForm.bind(this));
+	}
 
+	render(): HTMLElement {
 		this.triggerChanged()
-		this.submitButton.addEventListener(
-			'click',
-			this.onSubmitContactForm.bind(this)
-		);
 		return this.container;
 	}
 
